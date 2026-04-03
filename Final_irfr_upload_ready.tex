@@ -1,0 +1,2920 @@
+\documentclass[12pt]{article}
+
+% ------------------------------------------------------------
+% Essential Packages
+% ------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\usepackage{bm}
+\usepackage[title]{appendix}
+
+% ------------------------------------------------------------
+% Custom Theorem / Statement Environment
+% ------------------------------------------------------------
+\newtheoremstyle{statementstyle}
+  {6pt}{6pt}%
+  {\itshape}{}%
+  {\bfseries}{.}%
+  {0.8em}{}%
+
+\theoremstyle{statementstyle}
+\newtheorem{statement}{Statement}[section]
+
+% ------------------------------------------------------------
+% Title Information
+% ------------------------------------------------------------
+\title{An Axiomatic Derivation of Instantaneous Rolling Forward Rate Dynamics via the Kolmogorov Forward Equation}
+
+\author{Sachin Oza}
+\date{March 2026}
+
+% ------------------------------------------------------------
+% Document Begins
+% ------------------------------------------------------------
+\begin{document}
+
+\maketitle
+\vspace{-1.0em}
+
+% ------------------------------------------------------------
+% Abstract
+% ------------------------------------------------------------
+\begin{abstract}
+This paper develops an axiomatic framework for the dynamics of the instantaneous rolling forward rate (IRFR) and, by extension, the term structure of interest rates. Rather than postulating a stochastic process \emph{a priori}, it derives the admissible dynamics from four structural axioms encoding rolling-maturity invariance, equilibrium moment transport, and positivity at zero maturity. Under these restrictions, the IRFR is shown to follow a Pearson-type diffusion with affine drift and quadratic volatility, so that the diffusion structure arises endogenously from the axioms rather than being imposed exogenously.
+
+The framework yields several concrete implications. The equilibrium forward curve is exponential, the zero-maturity equilibrium forward rate equals one half of the asymptotic equilibrium level, and the entire forward curve can be reconstructed from a single observed forward rate together with structural parameters. Solving the associated Kolmogorov Forward Equation further shows that the maturity-indexed equilibrium density is a shifted inverse-gamma law of order three, implying strict positivity and heavy tails. The model also delivers a constant market signal-to-noise ratio and a forward-curve transition structure that is analogous to covariance kernels in classical affine term-structure models. Taken together, these results provide a structural account of IRFR dynamics linking equilibrium behaviour, forward-curve evolution, and probabilistic structure.
+\end{abstract}
+
+% ------------------------------------------------------------
+% 1. Introduction
+% ------------------------------------------------------------
+
+% --- Equilibrium terminology clarification ---
+\paragraph{Equilibrium terminology.}
+Throughout, we work with the maturity-indexed equilibrium regime. All distributional results are expressed as maturity-indexed equilibrium densities parameterized by $\tau = T-t$, rather than as limits in calendar time.
+
+\section{Introduction}
+\label{sec:introduction}
+
+A central modelling choice in any term-structure framework is the 
+selection of a rate-like quantity whose dynamics are both analytically 
+tractable and economically meaningful. This paper adopts as its 
+primitive the \emph{instantaneous rolling forward rate} (IRFR). 
+
+Consider a forward-starting infinitesimal borrowing--lending contract 
+initiated at time $t_{0}$ with zero initial value. At maturity 
+$T - t_{0}$, the buyer pays an instantaneous interest rate 
+$x_{t_{0},T}$ on a notional principal. This value defines the IRFR. 
+Because the contract is continuously marked to market, its value 
+process is, by construction,
+\[
+V(t) = x_{t,T},
+\]
+and over an infinitesimal interval $\Delta t$,
+\[
+\Delta V = x_{t+\Delta t,T} - x_{t,T}
+= \Delta x_{t,T}.
+\]
+
+As time advances from $t$ to $t + \delta t$ while the maturity 
+date $T$ remains fixed, the remaining maturity decreases from $T - t$ 
+to $T - (t + \delta t)$. Consequently, the IRFR ``rolls'' from 
+$x_{t,T}$ to $x_{t+\delta t,T}$. This rolling structure is a defining 
+feature of the IRFR and distinguishes it from the classical 
+Heath--Jarrow--Morton (HJM) forward rate, which is indexed by a fixed 
+maturity date rather than remaining maturity.
+
+In continuous time, the IRFR satisfies the fundamental bond-pricing 
+relations
+\[
+\int_{t_{0}}^{T} x_{t_{0},S}\,dS = -\ln P(t_{0},T),
+\qquad
+\int_{t}^{T} x_{t,S}\,dS = -\ln P(t,T),
+\]
+where $P(t,T)$ denotes the zero-coupon bond price and $T-t$ is the 
+current time-to-maturity.
+
+The objective of this paper is to characterise the class of stochastic
+processes governing the evolution of $x_{t,T}$ under four economically
+and probabilistically natural axioms. These
+axioms impose coherence across maturities and time, encode equilibrium
+behaviour, and enforce positivity at the short end. Their consequences
+are as follows:
+
+\begin{itemize}
+\item The drift and diffusion of the IRFR must be affine in the IRFR,
+      leading to a Pearson-type diffusion with quadratic volatility.
+\item The equilibrium forward curve has an exponential-decay form.
+\item The instantaneous short-maturity forward rate equals one-half of 
+      the equilibrium regime asymptotic rate at equilibrium.
+\item The entire forward curve can be reconstructed from a single 
+      forward rate plus structural parameters.
+\item The long-time distribution of the IRFR is a shifted 
+      inverse-gamma law, heavy-tailed and strictly positive.
+\end{itemize}
+
+Taken together, these results yield a unified analytical framework
+linking temporal evolution, cross-sectional maturity structure, and
+equilibrium regime probabilistic behaviour.
+
+% ------------------------------------------------------------
+% 2. Axioms
+% ------------------------------------------------------------
+\section{Axioms}
+\label{sec:axioms}
+
+This section presents the four structural axioms that govern the
+dynamics of the instantaneous rolling forward rate. Each axiom has
+both an economic interpretation and a mathematical implication, and
+together they substantially restrict the class of admissible diffusion
+processes governing $x_{t,T}$.
+
+\subsection*{Axiom 1 --- Stochastic Evolution}
+\label{ax:stochastic}
+
+At every remaining maturity, the IRFR follows a continuous-state 
+diffusion with density $\varphi(x,t,T)$ satisfying the Kolmogorov 
+Forward Equation (KFE):
+\begin{equation}
+\frac{\partial \varphi}{\partial t}
+=
+-\frac{\partial}{\partial x}(\mu(x,t,T)\varphi)
++ \frac12 \frac{\partial^{2}}{\partial x^{2}}
+\!\left(\sigma^{2}(x,t,T)\varphi\right),
+\qquad T - t > 0.
+\tag{2.0.1}\label{eq:axiom1}
+\end{equation}
+
+\subsection*{Axiom 2 --- Rolling--Maturity Invariance}
+\label{ax:rolling}
+
+If the drift or diffusion depended directly on calendar time, then two 
+IRFRs with the same remaining maturity could exhibit different 
+instantaneous dynamics, enabling a trader to roll positions forward and 
+exploit systematic differences.
+
+To prevent this form of arbitrage and to ensure dynamic consistency of 
+rolling contracts, the IRFR with remaining maturity $\tau = T - t$ must 
+satisfy a KFE whose drift and diffusion depend only on $(x,\tau)$:
+\begin{equation}
+\frac{\partial \varphi}{\partial t}
+=
+-\frac{\partial}{\partial x}\bigl(\mu(x,\tau)\varphi\bigr)
++ \frac12 \frac{\partial^{2}}{\partial x^{2}}
+\bigl(\sigma^{2}(x,\tau)\varphi\bigr),
+\qquad \tau > 0.
+\tag{2.0.2}\label{eq:axiom2}
+\end{equation}
+
+This enforces an invariance structure across calendar time: IRFRs with 
+identical remaining maturities must have identical local stochastic 
+behaviour.
+
+\subsection*{Axiom 3 --- Equilibrium Moment Transport}
+\label{ax:equilibrium}
+
+There exists an equilibrium maturity curve $x_{e,T-t}$ such that, at
+equilibrium, the first two moments of the instantaneous rolling forward
+rate are transported along constant remaining maturity. In particular,
+\begin{equation}
+\frac{\partial}{\partial t}\,\mathbb{E}[x_{t,T}]
+=
+-\frac{\partial}{\partial T}\,\mathbb{E}[x_{t,T}].
+\tag{2.0.3}
+\end{equation}
+and
+\begin{equation}
+\frac{\partial}{\partial t}\,\mathbb{E}[x_{t,T}^{\,2}]
+=
+-\frac{\partial}{\partial T}\,\mathbb{E}[x_{t,T}^{\,2}].
+\tag{2.0.4}
+\end{equation}
+Equivalently, the variance satisfies
+\begin{equation}
+\frac{\partial}{\partial t}\,\mathrm{Var}(x_{t,T})
+=
+-\frac{\partial}{\partial T}\,\mathrm{Var}(x_{t,T}).
+\tag{2.0.5}
+\end{equation}
+The long-maturity boundary condition is
+\[
+\lim_{T-t\to\infty} x_{e,T-t} = x_{\infty}.
+\]
+This axiom imposes equilibrium transport of the mean and variance of the
+forward rate across maturity, rather than full stationarity of all
+moments.
+
+\subsection*{Axiom 4 --- Positivity at Zero Maturity}
+\label{ax:positivity}
+
+At zero time-to-maturity, the IRFR satisfies $x_{t,t}>0$ almost surely. 
+To ensure that the boundary at zero is inaccessible, the diffusion 
+coefficient must vanish as the short-maturity IRFR approaches zero:
+\[
+\sigma(x,t,t)\longrightarrow 0
+\quad\text{as}\quad x_{t,t}\to 0.
+\]
+% ------------------------------------------------------------
+% 3. Structural Framework
+% ------------------------------------------------------------
+\section{Structural Framework}
+\label{sec:framework}
+
+This section derives the structural implications of the axioms for the
+dynamics of the instantaneous rolling forward rate. Beginning from the
+Kolmogorov Forward Equation, we derive affine forms for the drift and
+diffusion of the IRFR and identify the associated equilibrium relation
+between the coefficients. The deterministic
+evolution of the expectation, the variance structure, and several key
+identities follow naturally.
+
+% ------------------------------------------------------------
+\subsection*{3.0 \quad KFE Representation and Notational Setup}
+% ------------------------------------------------------------
+
+The Kolmogorov Forward Equation governing the evolution of the IRFR is
+\begin{equation}
+\frac{\partial \varphi}{\partial t}
+=
+-\frac{\partial}{\partial x}\!\left[\mu(x,t,T)\varphi\right]
++
+\frac{1}{2}\frac{\partial^{2}}{\partial x^{2}}
+\!\left[\sigma^{2}(x,t,T)\varphi\right].
+\tag{3.0.1}\label{eq:kfe-mu-sigma}
+\end{equation}
+
+Define the drift--diffusion pair
+\begin{align}
+f(x,t,T) &= -\mu(x,t,T), &
+g^{2}(x,t,T) &= \tfrac12 \sigma^{2}(x,t,T),
+\tag{3.0.2--3.0.3}
+\end{align}
+so that \eqref{eq:kfe-mu-sigma} becomes
+\begin{equation}
+\frac{\partial \varphi}{\partial t}
+=
+\frac{\partial^{2}}{\partial x^{2}}\!\left[g^{2}(x,t,T)\varphi\right]
++
+\frac{\partial}{\partial x}\!\left[f(x,t,T)\varphi\right].
+\tag{3.0.4}\label{eq:kfe-f-g}
+\end{equation}
+
+% ------------------------------------------------------------
+\subsection{Affine Forms of Drift and Diffusion}
+% ------------------------------------------------------------
+
+\begin{statement}[Affine Forms of Drift and Diffusion]
+\label{stmt:affineforms}
+\emph{
+Assume Axiom~2 (rolling--maturity invariance), so that the drift and
+diffusion depend on time only through the remaining maturity
+\(\tau:=T-t\):
+}
+\[
+f(x,t,T)=F(x,\tau), \qquad g(x,t,T)=G(x,\tau).
+\]
+\emph{Assume in addition the following affine-closure hypothesis: for each fixed \(\tau\), the diffusion has state-independent slope,}
+\[
+\partial_{xx}G(x,\tau)=0,
+\]
+\emph{
+and the net probability flux is affine in the state variable, i.e.
+there exist functions \(A(\tau)\) and \(B(\tau)\) such that}
+\[
+\partial_x\!\bigl(G(x,\tau)^2\bigr)+F(x,\tau)=A(\tau)x+B(\tau).
+\]
+\emph{
+Then both the diffusion and drift are affine in the IRFR state \(x\):
+}
+\begin{equation}
+g(x,t,T)=a(\tau)x+b(\tau),
+\qquad
+f(x,t,T)=a_1(\tau)x+b_1(\tau),
+\qquad \tau=T-t.
+\tag{3.1.1}\label{eq:affineforms}
+\end{equation}
+\end{statement}
+
+\medskip
+
+\noindent\textbf{Derivation.}
+Expanding the KFE \eqref{eq:kfe-f-g} gives
+\begin{align}
+\frac{\partial \varphi}{\partial t}
+&=
+g^{2}\varphi_{xx}
++\bigl(2(g^{2})_{x}+f\bigr)\varphi_{x}
++\bigl((g^{2})_{xx}+f_{x}\bigr)\varphi
+\notag\\
+&=
+g^{2}\varphi_{xx}
++\bigl(4g g_{x}+f\bigr)\varphi_{x}
++\bigl((g^{2})_{xx}+f_{x}\bigr)\varphi.
+\tag{3.1.2}\label{eq:kfe-expanded}
+\end{align}
+Under Axiom~2 we may write \(f(x,t,T)=F(x,\tau)\) and \(g(x,t,T)=G(x,\tau)\),
+where \(\tau=T-t\). The additional affine-closure hypothesis now implies
+\[
+\partial_{xx}G(x,\tau)=0,
+\]
+hence for each fixed \(\tau\),
+\[
+G(x,\tau)=a(\tau)x+b(\tau).
+\]
+Substituting this into the affine flux identity
+\[
+\partial_x\!\bigl(G(x,\tau)^2\bigr)+F(x,\tau)=A(\tau)x+B(\tau)
+\]
+yields
+\[
+F(x,\tau)
+=
+A(\tau)x+B(\tau)-\partial_x\!\bigl(G(x,\tau)^2\bigr).
+\]
+Since \(G(x,\tau)=a(\tau)x+b(\tau)\), we have
+\[
+\partial_x\!\bigl(G(x,\tau)^2\bigr)
+=
+2a(\tau)\bigl(a(\tau)x+b(\tau)\bigr),
+\]
+which is affine in \(x\). Therefore \(F(x,\tau)\) is affine in \(x\) as well:
+\[
+F(x,\tau)=a_1(\tau)x+b_1(\tau).
+\]
+Returning to the original notation,
+\[
+g(x,t,T)=a(T-t)x+b(T-t),
+\qquad
+f(x,t,T)=a_1(T-t)x+b_1(T-t).
+\]
+This proves Statement~\ref{stmt:affineforms}.
+% ------------------------------------------------------------
+\subsection{Equilibrium Relation of Drift and Diffusion}
+% ------------------------------------------------------------
+
+\begin{statement}[Equilibrium Relation of Drift and Diffusion]
+\label{stmt:eqrelation}
+\emph{
+Let \(\tau:=T-t\). Suppose the drift and diffusion are affine in the IRFR state:
+}
+\[
+f(x,t,T)=a_1(\tau)x+b_1(\tau),\qquad
+g(x,t,T)=a(\tau)x+b(\tau).
+\]
+\emph{
+Assume further that the equilibrium mean depends only on remaining maturity,
+}
+\[
+\mathbb{E}[x_{t,T}]=x_{e,\tau},
+\]
+\emph{
+and that the affine intercepts satisfy the proportionality condition
+}
+\[
+b(\tau)=\frac{a(\tau)}{a_1(\tau)}\,b_1(\tau),
+\qquad a_1(\tau)\neq 0.
+\]
+\emph{
+Then the drift and diffusion satisfy
+}
+\begin{align}
+f(x,t,T)
+&=
+a_1(\tau)\bigl(x-x_{e,\tau}\bigr)+x'_{e,\tau},
+\tag{3.2.1a}\label{eq:eqdrift}\\[0.3em]
+g(x,t,T)
+&=
+a(\tau)\bigl(x-x_{e,\tau}\bigr)
++
+\frac{a(\tau)}{a_1(\tau)}\,x'_{e,\tau}.
+\tag{3.2.1b}\label{eq:eqdiffusion}
+\end{align}
+\end{statement}
+% ------------------------------------------------------------
+\subsection{Deterministic Evolution of the IRFR Expectation}
+% ------------------------------------------------------------
+
+\begin{statement}[Expected forward-curve dynamics]\label{stmt:expectation}
+\normalfont
+For fixed maturity \(T\), suppose the expected forward rate evolves according to
+\[
+\frac{\partial \mathbb{E}[x_{t,T}]}{\partial t}
+=
+-a_1\bigl(\mathbb{E}[x_{t,T}] - x_{e,T-t}\bigr)
++
+\frac{\partial x_{e,T-t}}{\partial t},
+\]
+where \(a_1>0\) is constant. Then
+\begin{equation}
+\mathbb{E}[x_{t,T}]
+=
+x_{e,T-t}
++
+\left(x_{t_0,T}-x_{e,T-t_0}\right)e^{-a_1(t-t_0)}.
+\tag{3.3.1}\label{eq:expectation-general}
+\end{equation}
+\end{statement}
+
+Derivation is given in Appendix \ref{appendix:A3}.
+
+% ------------------------------------------------------------
+\subsection{Drift Constant Equals Stochastic Constant}
+% ------------------------------------------------------------
+
+\begin{statement}[Drift Constant Equals Stochastic Constant]
+\label{stmt:a1eqasq}
+\emph{
+The affine drift constant equals the stochastic constant:
+}
+\[
+a_{1}=a^{2}.
+\tag{3.4.1}
+\]
+\end{statement}
+
+\medskip
+
+\noindent\textbf{Reasoning.}
+The identity \(a_{1}=a^{2}\) is a structural equilibrium restriction.
+If \(a_{1}\neq a^{2}\), the equilibrium second-moment evolution contains a
+residual term that can be eliminated only in the degenerate case of a globally
+linear equilibrium curve, which is incompatible with Axioms~3--4. Hence the
+only admissible non-degenerate equilibrium is
+\[
+a_{1}=a^{2}.
+\]
+A full derivation is given in Appendix~\ref{appendix:A4}.
+
+Interpretively, this is a drift--diffusion relationship: it ties the
+drift loading directly to the squared diffusion loading, so that the
+transport speed of the mean and the variance-production scale are no
+longer independent structural degrees of freedom.
+
+% ------------------------------------------------------------
+\subsection{Interim Drift and Diffusion Forms}
+% ------------------------------------------------------------
+
+\begin{statement}[Interim Drift and Diffusion]
+\label{stmt:interim}
+\emph{
+If one adopts the baseline exponential equilibrium specification
+\[
+x_{e,T-t}=x_{\infty}+A e^{-\lambda^{2}(T-t)},
+\]
+then consistency of \eqref{eq:eqdrift}--\eqref{eq:eqdiffusion} implies
+the interim representations
+}
+\begin{align}
+f(x,t,T)
+&=
+a^{2}x_{t,T}
+-
+a^{2}x_{\infty}
+-
+(\lambda^{2}+a^{2})A\, e^{-\lambda^{2}(T-t)},
+\tag{3.5.1a}\label{eq:interim-f}\\[0.3em]
+g(x,t,T)
+&=
+a x_{t,T}
+-
+a x_{\infty}
+-
+\left(a + \frac{\lambda^{2}}{a}\right)
+A\,e^{-\lambda^{2}(T-t)}.
+\tag{3.5.1b}\label{eq:interim-g}
+\end{align}
+\end{statement}
+
+\medskip
+
+This is a conditional consistency result. The exponential equilibrium
+curve is imposed as a baseline specification, and \eqref{eq:interim-f}--
+\eqref{eq:interim-g} are the corresponding drift and diffusion forms
+required by that choice.
+
+% ------------------------------------------------------------
+\subsection{Instantaneous Variance}
+% ------------------------------------------------------------
+
+\begin{statement}[Instantaneous Variance]
+\label{stmt:variance}
+\emph{
+Under the baseline exponential equilibrium specification used in
+Statement~\ref{stmt:interim}, the instantaneous variance evolves according to
+}
+\begin{equation}
+\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})
+=
+2\left(
+a\,D(t,T)
+-
+\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right)^{2},
+\tag{3.6.1}\label{eq:variance}
+\end{equation}
+where
+\begin{equation}
+D(t,T)
+=
+\left(
+x_{t_{0},T}
+-
+x_{\infty}
+-
+A e^{-\lambda^{2}(T-t_{0})}
+\right)
+e^{-a^{2}(t-t_{0})}.
+\tag{3.6.2}\label{eq:D-def}
+\end{equation}
+\end{statement}
+
+\medskip
+
+This is the variance evolution implied by the interim forms
+\eqref{eq:interim-f}--\eqref{eq:interim-g} under that baseline
+specification. A full derivation is given in Appendix~\ref{appendix:A6}.
+
+% ------------------------------------------------------------
+\subsection{Market Signal--to--Noise Ratio}
+% ------------------------------------------------------------
+
+\begin{statement}[Market Signal--to--Noise Ratio]
+\label{stmt:msnr}
+\emph{
+Define the Market Signal--to--Noise Ratio (MSNR) as the ratio of expected
+instantaneous return to the square root of instantaneous variance. Under this
+definition, the model-implied MSNR is
+}
+\[
+\mathrm{MSNR}
+=
+\frac{a}{\sqrt{2}}.
+\tag{3.7.1}
+\]
+\end{statement}
+
+\medskip
+
+In particular, the MSNR is constant: it is independent of calendar time
+\(t\), maturity \(T\), and the state \(x_{t,T}\). This does not require
+imposing the baseline specification \(\lambda^{2}=a^{2}\).
+A derivation is given in Appendix~\ref{appendix:A7}.
+
+
+% ------------------------------------------------------------
+\section{Kolmogorov Forward Equation Solution}
+\label{sec:kfe-solution}
+
+This section solves the Kolmogorov Forward Equation for the identified
+baseline model. In what follows, we impose
+\[
+a_{1}=a^{2},
+\qquad
+\lambda^{2}=a^{2},
+\]
+as the baseline specification and study the implied equilibrium behaviour of
+the IRFR density.
+
+Interpretively, the restriction \(\lambda^{2}=a^{2}\) is a temporal--maturity relationship: it identifies the decay scale in maturity with the
+same structural decay scale that governs time evolution in the model.
+
+A convenient shifted coordinate removes the deterministic equilibrium
+component and isolates the residual stochastic part of the dynamics. In
+those coordinates, the KFE admits a closed-form equilibrium regime given
+by a shifted inverse-gamma distribution of order~3.
+
+Throughout, we work with the maturity-indexed equilibrium regime,
+parameterised by
+\[
+\tau:=T-t\ge 0.
+\]
+Accordingly, distributional results are stated as maturity-indexed
+equilibrium densities, while the limit \(\tau\to\infty\) will be
+referred to as the \emph{long-maturity limit}.
+
+% ------------------------------------------------------------
+\subsection{Maturity-Indexed Equilibrium Density}
+
+Under the baseline specification \(\lambda^{2}=a^{2}\), define the shifted variable
+\[
+\widetilde{x}
+=
+x_{t,T}
+-
+x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right).
+\]
+
+This transformation removes the deterministic equilibrium component and centres the
+KFE on the residual stochastic part.
+
+In the shifted coordinate, the forward equation becomes
+\begin{equation}
+\frac{\partial \varphi}{\partial t}
+=
+a^{2}\widetilde{x}^{2}\frac{\partial^{2}\varphi}{\partial \widetilde{x}^{2}}
++
+5a^{2}\widetilde{x}\frac{\partial \varphi}{\partial \widetilde{x}}
++
+3a^{2}\varphi
+-
+a^{2}x_{\infty}e^{-a^{2}(T-t)}\frac{\partial \varphi}{\partial \widetilde{x}}.
+\tag{4.1.1}
+\end{equation}
+
+The Frobenius expansion in Appendix~B.1 yields the equilibrium density
+\begin{equation}
+\varphi(\widetilde{x}, t, T)
+=
+\frac{x_{\infty}^{3}e^{-3a^{2}(T-t)}}{\Gamma(3)\,\widetilde{x}^{4}}
+\exp\!\left(
+-\frac{x_{\infty}e^{-a^{2}(T-t)}}{\widetilde{x}}
+\right).
+\label{eq:shiftedinversegammapdf}
+\tag{4.1.2}
+\end{equation}
+
+This is a shifted inverse-gamma law with shape parameter \(3\). Its support is strictly
+positive, and its heavy right tail reflects the multiplicative structure of the underlying
+diffusion. The scale is set by \(x_{\infty}\), while the factor \(e^{-a^{2}(T-t)}\)
+controls the maturity-dependent approach to equilibrium.
+%================================================================
+\subsection{Boundary Behaviour}
+\label{sec:boundary}
+
+We now classify the behaviour of the process near the lower boundary
+\(x=0\). For the diffusion associated with the IRFR, the scale density is
+\begin{equation}
+s'(x)
+=
+\exp\!\left(
+-\!\int^{x}
+\frac{2f(y,t,T)}{g^{2}(y,t,T)}\,dy
+\right)
+\sim x^{-2},
+\qquad x\to 0^{+},
+\tag{4.2.1}\label{eq:scale-density}
+\end{equation}
+and the corresponding speed density is
+\begin{equation}
+m(x)
+=
+\frac{1}{g^{2}(x,t,T)\,s'(x)}
+\sim x,
+\qquad x\to 0^{+}.
+\tag{4.2.2}\label{eq:speed-density}
+\end{equation}
+
+Hence
+\[
+\int_{0^{+}} s'(x)\,dx = \infty,
+\qquad
+\int_{0^{+}} m(x)\,dx < \infty.
+\]
+By the standard Feller boundary classification, the origin is therefore
+an \emph{entrance boundary}. Equivalently,
+\begin{equation}
+\boxed{
+x=0 \text{ is inaccessible from the interior and cannot be reached in finite time.}
+}
+\tag{4.2.3}\label{eq:boundary-classification}
+\end{equation}
+
+This is fully consistent with Axiom~4 and confirms that the model
+preserves positivity of the instantaneous short-maturity IRFR.
+
+% ------------------------------------------------------------
+% 5. Structural Integration of Key Results
+% ------------------------------------------------------------
+\section{Integrated Baseline Specification}
+\label{sec:structural-integration}
+
+This section consolidates the structural results established in
+Section~3 and Appendix~A. In particular, we now work under the two
+baseline identifications
+\[
+a_{1}=a^{2},
+\qquad
+\lambda^{2}=a^{2}.
+\]
+The purpose of the present section is not to re-derive those identities,
+but to integrate them into a single coherent specification for the
+equilibrium curve, the drift and diffusion coefficients, the Kolmogorov
+Forward Equation, and the forward-curve representation.
+
+We proceed in six steps. First, we determine the equilibrium amplitude
+\(A\) from the boundary condition. Second, we obtain the fully identified
+equilibrium curve. Third, we simplify the drift and diffusion
+coefficients. Fourth, we write the associated Kolmogorov Forward
+Equation. Fifth, we derive the simplified forward curve representation. Sixth, we state the implied expectation and variance dynamics.
+
+% ------------------------------------------------------------
+\subsection{Boundary Condition and Determination of the Amplitude \(A\)}
+\label{subsec:determine-A}
+
+From Statement~\ref{stmt:interim}, the interim diffusion is
+\[
+g(x,t,T)
+=
+a x_{t,T}
+-
+a x_{\infty}
+-
+\left(a+\frac{\lambda^{2}}{a}\right)
+A e^{-\lambda^{2}(T-t)}.
+\]
+Under the baseline specification \(\lambda^{2}=a^{2}\), this becomes
+\[
+g(x,t,T)
+=
+a x_{t,T}
+-
+a x_{\infty}
+-
+2aA e^{-a^{2}(T-t)}.
+\]
+
+Axiom~4 requires that the diffusion vanish at the short-maturity
+boundary:
+\[
+g(x_{\min},t,t)=0.
+\]
+At the boundary \(x_{t,t}=x_{\min}=0\), and at \(T=t\) one has
+\(e^{-a^{2}(T-t)}=1\). Hence
+\[
+0
+=
+-a x_{\infty}
+-
+2aA.
+\]
+Since \(a\neq 0\), it follows that
+\begin{equation}
+A=-\frac{x_{\infty}}{2}.
+\tag{5.1.1}\label{eq:A-half-xinf}
+\end{equation}
+
+Thus the equilibrium amplitude is determined by the boundary
+condition.
+
+% ------------------------------------------------------------
+\subsection{Fully Identified Equilibrium Curve}
+\label{subsec:reevaluate-xe}
+
+Under the baseline specification \(\lambda^{2}=a^{2}\), substituting
+\(A=-x_{\infty}/2\) into the equilibrium form
+\[
+x_{e,T-t}=x_{\infty}+A e^{-\lambda^{2}(T-t)}
+\]
+gives
+\begin{equation}
+x_{e,T-t}
+=
+x_{\infty}
+\left(
+1-\frac12 e^{-a^{2}(T-t)}
+\right).
+\tag{5.2.1}\label{eq:xe-final}
+\end{equation}
+
+In particular,
+\[
+x_{e,0}=\frac{x_{\infty}}{2}.
+\]
+Thus, at equilibrium, the short end of the curve lies exactly halfway
+between the lower boundary \(0\) and the long-maturity asymptote
+\(x_{\infty}\).
+
+% ------------------------------------------------------------
+\subsection{Updated Drift and Diffusion}
+\label{subsec:updated-drift-diffusion}
+
+Differentiate \eqref{eq:xe-final} with respect to \(T\):
+\[
+\frac{\partial x_{e,T-t}}{\partial T}
+=
+\frac12 x_{\infty} a^{2} e^{-a^{2}(T-t)}.
+\]
+
+Now, under the baseline specification \(\lambda^{2}=a^{2}\), substitute
+\(A=-x_{\infty}/2\) into the interim forms
+\eqref{eq:interim-f}--\eqref{eq:interim-g}. This yields
+\begin{align}
+g(x,t,T)
+&=
+a x
+-
+a x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right),
+\tag{5.3.1a}\label{eq:g-updated}
+\\[0.4em]
+f(x,t,T)
+&=
+a^{2}x
+-
+a^{2}x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right).
+\tag{5.3.1b}\label{eq:f-updated}
+\end{align}
+
+Both coefficients therefore revert toward the same identified
+equilibrium level, with diffusion loading \(a\) and drift loading
+\(a^{2}\).
+
+% ------------------------------------------------------------
+\subsection{Updated Kolmogorov Forward Equation}
+\label{subsec:updated-kfe}
+
+Substituting \eqref{eq:g-updated} and \eqref{eq:f-updated} into the
+Kolmogorov Forward Equation gives
+\begin{align}
+\frac{\partial \varphi}{\partial t}
+&=
+\frac{\partial^{2}}{\partial x^{2}}
+\left(
+\left[
+a x_{t,T}
+-
+a x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right)
+\right]^{2}
+\varphi
+\right)
+\notag\\[0.4em]
+&\qquad
++
+\frac{\partial}{\partial x}
+\left(
+\left[
+a^{2}x_{t,T}
+-
+a^{2}x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right)
+\right]
+\varphi
+\right).
+\tag{5.4.1}\label{eq:kfe-updated}
+\end{align}
+
+This is the fully identified forward equation under the baseline
+equilibrium specification.
+
+% ------------------------------------------------------------
+\subsection{Simplified Forward-Curve Representation}
+\label{subsec:revised-forwardcurve}
+
+Using the baseline exponential equilibrium curve together with the baseline forward-curve representation, we obtain
+\[
+x_{t,T}
+=
+x_{\infty}
++
+A e^{-\lambda^{2}(T-t)}
++
+\bigl(x_{t,t}-x_{\infty}-A\bigr)e^{-a^{2}(T-t)}.
+\]
+Substituting \(\lambda^{2}=a^{2}\) and \(A=-x_{\infty}/2\) gives
+\begin{align}
+x_{t,T}
+&=
+x_{\infty}
+-
+\frac{x_{\infty}}{2}e^{-a^{2}(T-t)}
++
+\left(x_{t,t}-x_{\infty}+\frac{x_{\infty}}{2}\right)e^{-a^{2}(T-t)}
+\nonumber\\
+&=
+x_{\infty}
++
+(x_{t,t}-x_{\infty})e^{-a^{2}(T-t)}.
+\tag{5.5.1}\label{eq:forwardcurve-final}
+\end{align}
+
+Thus the entire forward curve is determined by the short-maturity value
+\(x_{t,t}\), the equilibrium regime level \(x_{\infty}\), and the common decay rate
+\(a^{2}\).
+
+% ------------------------------------------------------------
+\subsection{Expectation and Variance under the Identified Baseline}
+\label{subsec:instantaneous}
+
+Under the baseline forward-curve form
+\eqref{eq:forwardcurve-final}, the expectation is given by
+Appendix~\ref{appendix:B3}; see \eqref{eq:B31}. Explicitly,
+\begin{equation}
+\mathbb{E}[x_{t,T}]
+=
+x_{t_{0},t_{0}}e^{-a^{2}(T+t-2t_{0})}
++
+x_{\infty}
+-
+x_{\infty} e^{-a^{2}(T-t_{0})}.
+\tag{5.6.1}\label{eq:mean-final}
+\end{equation}
+
+For the variance, it is safest to retain the direct identified
+specialisation of Statement~\ref{stmt:variance}. Using
+\(\lambda^{2}=a^{2}\) and \(A=-x_{\infty}/2\) in
+\eqref{eq:variance}--\eqref{eq:D-def} gives
+\begin{equation}
+\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})
+=
+2a^{2}
+\left(
+D(t,T)+\frac{x_{\infty}}{2}e^{-a^{2}(T-t)}
+\right)^{2},
+\tag{5.6.2}\label{eq:var-final}
+\end{equation}
+where
+\begin{equation}
+D(t,T)
+=
+\left(
+x_{t_{0},T}
+-
+x_{\infty}
++
+\frac{x_{\infty}}{2}e^{-a^{2}(T-t_{0})}
+\right)e^{-a^{2}(t-t_{0})}.
+\tag{5.6.3}\label{eq:D-final}
+\end{equation}
+
+Thus the expectation and instantaneous variance both inherit the same
+identified decay scale \(a^{2}\), while the cross-sectional shape remains
+parametrised by the maturity gap \(T-t\).
+% ------------------------------------------------------------
+% 6. Economic Interpretation
+% ------------------------------------------------------------
+\section{Economic Interpretation}
+\label{sec:econ}
+
+This section interprets the structural and probabilistic results
+obtained in Sections~\ref{sec:framework}--%
+\ref{sec:kfe-solution}. Each parameter of the IRFR diffusion plays a
+distinct role in shaping both the cross-sectional structure of the
+forward curve and its temporal evolution.
+
+% ------------------------------------------------------------
+\subsection{Mean-Reversion Dynamics}
+\label{subsec:mean-reversion}
+
+The drift and diffusion coefficients in their updated form
+\eqref{eq:f-updated}--\eqref{eq:g-updated} may be rewritten as
+\begin{align}
+f(x,t,T)
+&=
+a^{2}(x - x_{\infty})
++
+a^{2} x_{\infty} e^{-a^{2}(T-t)},
+\tag{6.1.1}\label{eq:drift-interpretation}
+\\[0.4em]
+g(x,t,T)
+&=
+a(x - x_{\infty})
++
+a\, x_{\infty} e^{-a^{2}(T-t)}.
+\tag{6.1.2}\label{eq:stochastic-interpretation}
+\end{align}
+
+Thus, \(a\) sets the diffusion loading, while \(a^{2}\) governs the
+corresponding drift reversion scale.
+
+% ------------------------------------------------------------
+\subsection{Equilibrium Regime Level and Equilibrium Structure}
+\label{subsec:equilibrium-structure}
+
+The equilibrium curve derived in \eqref{eq:xe-final} is
+\begin{equation}
+x_{e,T-t}
+=
+x_{\infty}
+-
+\frac{x_{\infty}}{2}\, e^{-a^{2}(T-t)},
+\tag{6.2.1}\label{eq:xe-equilibrium-interpretation}
+\end{equation}
+which displays exponential decay from the short end toward the
+equilibrium regime asymptote. At zero maturity, equilibrium requires
+\[
+x_{e,0}=\frac{x_{\infty}}{2},
+\]
+This expresses the structural link between the short and long ends of
+the curve.
+
+% ------------------------------------------------------------
+\subsection{Forward-Curve Dynamics}
+\label{subsec:forward-curve-dynamics}
+
+Under the baseline specification, the expected forward curve evolves according to
+\begin{equation}
+\mathbb{E}[x_{t,T}]
+=
+x_{t_{0},t_{0}}e^{-a^{2}(T+t-2t_{0})}
++
+x_{\infty}
+-
+x_{\infty} e^{-a^{2}(T-t_{0})}.
+\tag{6.3.1}\label{eq:forward-curve-dynamics}
+\end{equation}
+as shown in Appendix~\ref{appendix:B3}; see \eqref{eq:B31}. This expression shows that the mean forward curve is pinned down by the initial short-maturity condition \(x_{t_{0},t_{0}}\), the equilibrium regime level \(x_{\infty}\), and the common decay rate \(a^{2}\). For fixed \(T\), the first term decays with calendar time, while the second and third terms govern convergence toward the equilibrium regime level.
+
+\medskip
+\noindent\textbf{Covariance-style structure and equilibrium.}
+Introducing shifted variables \(T' = T - t_0\) and \(t' = t - t_0\), so that
+\(\tau = T' - t'\), makes the forward-curve dynamics separate into elapsed-time
+decay and maturity loading through exponential factors. In this form, the
+transition structure is reminiscent of the covariance kernels in classical
+affine term-structure models such as Vasicek and CIR: \(t'\) governs temporal
+propagation, while \(\tau\) governs maturity dependence.
+
+
+% ------------------------------------------------------------
+\subsection{Distributional Implications}
+\label{subsec:distributional}
+
+The equilibrium regime density from Section~4.1, equation \eqref{eq:shiftedinversegammapdf}, is the shifted inverse-gamma law
+
+\begin{equation}
+\varphi(\widetilde{x},t,T)
+=
+\frac{x_{\infty}^{3}e^{-3a^{2}(T-t)}}{\Gamma(3)\,\widetilde{x}^{4}}
+\exp\!\left(
+-\frac{x_{\infty}e^{-a^{2}(T-t)}}{\widetilde{x}}
+\right),
+\tag{6.4.1}\label{eq:long-time-limit-density-interpretation}
+\end{equation}
+which is strictly positive and heavy-tailed. This is consistent with
+the empirical observation that interest rates can occasionally exhibit
+large moves.
+
+% ------------------------------------------------------------
+\subsection{Boundary Behaviour}
+\label{subsec:econ-boundary}
+
+As shown in Section~\ref{sec:boundary}, the origin is an entrance
+boundary. The IRFR therefore cannot reach zero in finite time from the
+interior.
+% ------------------------------------------------------------
+% 7. Applications
+% ------------------------------------------------------------
+\section{Applications}
+\label{sec:applications}
+
+The structural and probabilistic characterisation of the IRFR provides
+a tractable platform for simulation, estimation, curve construction,
+risk analysis, and pricing of interest-rate--dependent instruments.
+This section outlines several practical uses of the model.
+
+% ------------------------------------------------------------
+\subsection{Simulating IRFR Paths}
+\label{subsec:simulation}
+
+Using the updated drift and diffusion 
+\eqref{eq:f-updated}--\eqref{eq:g-updated}, the IRFR under the physical
+measure satisfies the stochastic differential equation
+\[
+dx_{t,T}
+=
+-f(x,t,T)\,dt
++
+\sqrt{2}g(x,t,T)\,dW_{t}.
+\]
+
+Given the explicit forms of $f$ and $g$, one may simulate sample paths
+of forward rates using Euler--Maruyama or higher-order schemes. The
+affine structure supports stable numerical implementation, while the
+boundary properties established in Section~\ref{sec:boundary} preserve
+positivity.
+
+% ------------------------------------------------------------
+\subsection{Yield Curve Construction}
+\label{subsec:yield-curve}
+
+Under the baseline specification, the forward curve can be constructed from
+the short rate \(x_{t,t}\) using the representation
+\[
+x_{t,T}
+=
+(x_{t,t} - x_{\infty})e^{-a^{2}(T-t)}
++
+x_{\infty}.
+\]
+This exponential form fits naturally into continuous-time curve building
+and provides a parsimonious two-parameter representation of the term
+structure at any given time.
+
+% ------------------------------------------------------------
+\subsection{Risk Management and Stress Testing}
+\label{subsec:risk}
+
+Because the maturity-indexed equilibrium density is heavy-tailed and strictly positive,
+stress scenarios may incorporate large, sudden rate moves drawn from
+the shifted inverse-gamma law. Perturbations in the structural
+parameters $(a, x_{\infty})$ then provide a coherent way to stress-test
+mean reversion and equilibrium regime rate assumptions.
+
+% ------------------------------------------------------------
+\subsection{Pricing Interest-Rate--Dependent Claims}
+\label{subsec:pricing}
+
+Under a risk-neutral measure, the drift adjusts to incorporate market 
+prices of risk, while the diffusion remains affine. The positivity of 
+$x_{t,T}$ renders the model suitable for pricing caps, floors, and 
+swaptions, and the exponential structure of the forward curve gives 
+closed-form or semi-closed-form solutions for many related derivatives.
+% ------------------------------------------------------------
+% Appendices
+% ------------------------------------------------------------
+\begin{appendices}
+\section{Technical Derivations for Section 3}
+\label{appendix:A}
+
+This appendix provides full derivations of the structural results in
+Section~\ref{sec:framework}. All proofs follow a clear step-by-step
+format.
+
+% ============================================================
+\subsection{Proof of Statement~\ref{stmt:affineforms}}
+\label{appendix:A1}
+\medskip
+\noindent\textbf{Step 1: Expand the KFE.}  
+From \eqref{eq:kfe-f-g},
+\begin{equation}
+\frac{\partial\varphi}{\partial t}
+=
+g^{2}\varphi_{xx}
++
+\bigl(2(g^{2})_{x}+f\bigr)\varphi_{x}
++
+\bigl((g^{2})_{xx}+f_{x}\bigr)\varphi.
+\tag{A.1.1}
+\end{equation}
+Equivalently, since \((g^{2})_{x}=2g g_{x}\),
+\[
+\frac{\partial\varphi}{\partial t}
+=
+g^{2}\varphi_{xx}
++
+(4g g_{x}+f)\varphi_{x}
++
+\bigl((g^{2})_{xx}+f_{x}\bigr)\varphi.
+\]
+
+\medskip
+\noindent\textbf{Step 2: Apply rolling--maturity invariance (Axiom 2).}  
+Axiom~2 implies that the coefficients depend on calendar time only through
+remaining maturity \(\tau=T-t\). Hence there exist functions \(F\) and
+\(G\) such that
+\begin{equation}
+f(x,t,T)=F(x,\tau),
+\qquad
+g(x,t,T)=G(x,\tau),
+\qquad \tau=T-t.
+\tag{A.1.2}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 3: Impose the affine-closure hypothesis.}  
+Assume that for each fixed \(\tau\),
+\begin{equation}
+\partial_{xx}G(x,\tau)=0,
+\tag{A.1.3}\label{eq:A13}
+\end{equation}
+and that the net probability flux is affine in \(x\):
+\begin{equation}
+\partial_x\!\bigl(G(x,\tau)^2\bigr)+F(x,\tau)=A(\tau)x+B(\tau)
+\tag{A.1.4}\label{eq:A14}
+\end{equation}
+for some functions \(A(\tau)\) and \(B(\tau)\).
+
+\medskip
+\noindent\textbf{Step 4: Solve for the diffusion.}  
+Equation \eqref{eq:A13} implies that \(G\) is affine in \(x\). Therefore
+there exist functions \(a(\tau)\) and \(b(\tau)\) such that
+\begin{equation}
+G(x,\tau)=a(\tau)x+b(\tau).
+\tag{A.1.5}\label{eq:A15}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 5: Solve for the drift.}  
+Substituting \eqref{eq:A15} into \eqref{eq:A14} gives
+\[
+F(x,\tau)
+=
+A(\tau)x+B(\tau)-\partial_x\!\bigl(G(x,\tau)^2\bigr).
+\]
+But
+\[
+\partial_x\!\bigl(G(x,\tau)^2\bigr)
+=
+2a(\tau)\bigl(a(\tau)x+b(\tau)\bigr),
+\]
+which is affine in \(x\). Hence \(F\) is affine in \(x\) as well, so there
+exist functions \(a_1(\tau)\) and \(b_1(\tau)\) such that
+\begin{equation}
+F(x,\tau)=a_1(\tau)x+b_1(\tau).
+\tag{A.1.6}\label{eq:A16}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 6: Return to the original notation.}  
+Using \(\tau=T-t\), equations \eqref{eq:A15} and \eqref{eq:A16} become
+\[
+g(x,t,T)=a(T-t)x+b(T-t),
+\qquad
+f(x,t,T)=a_1(T-t)x+b_1(T-t).
+\]
+Thus both diffusion and drift are affine in the IRFR state \(x\), which
+establishes Statement~\ref{stmt:affineforms}.
+% ============================================================
+% ============================================================
+\subsection{Proof of Statement \ref{stmt:eqrelation}}
+\label{appendix:A2}
+
+\textbf{Goal.}  
+Derive the equilibrium drift--diffusion relations
+\eqref{eq:eqdrift}--\eqref{eq:eqdiffusion}.
+
+\medskip
+\noindent\textbf{Step 1: Equilibrium identity.}  
+Under Axiom 3, the equilibrium IRFR depends only on time-to-maturity, so that
+\[
+x_{e,T-t}=x_{e,\tau}, \qquad \tau:=T-t.
+\]
+Hence
+\[
+\frac{\partial x_{e,T-t}}{\partial t}
+=
+-\,x'_{e,\tau}.
+\tag{A.2.12}
+\]
+
+\medskip
+\noindent\textbf{Step 2: First-moment evolution.}  
+From the Fokker--Planck equation, multiplying by \(x\), integrating over
+\(x\in[x_{\min},\infty)\), and assuming the boundary terms vanish, gives
+\[
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}]
+=
+-\mathbb{E}[f(x,t,T)].
+\tag{A.2.13}
+\]
+Using the affine drift form from Statement~\ref{stmt:affineforms},
+\[
+f(x,t,T)=a_1(\tau)x+b_1(\tau),
+\tag{A.2.14}\label{eq:A214}
+\]
+it follows that
+\[
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}]
+=
+-\,a_1(\tau)\mathbb{E}[x_{t,T}] - b_1(\tau).
+\tag{A.2.15}\label{eq:A215}
+\]
+
+\medskip
+\noindent\textbf{Step 3: Impose equilibrium.}  
+At equilibrium,
+\[
+\mathbb{E}[x_{t,T}]=x_{e,\tau},
+\]
+so \eqref{eq:A215} becomes
+\[
+\frac{\partial x_{e,\tau}}{\partial t}
+=
+-\,a_1(\tau)x_{e,\tau}-b_1(\tau).
+\tag{A.2.16}
+\]
+Using \(\partial_t x_{e,\tau}=-x'_{e,\tau}\), we obtain
+\[
+-\,x'_{e,\tau}
+=
+-\,a_1(\tau)x_{e,\tau}-b_1(\tau),
+\]
+hence
+\[
+b_1(\tau)
+=
+-\,a_1(\tau)x_{e,\tau}+x'_{e,\tau}.
+\tag{A.2.17}\label{eq:A217}
+\]
+
+\medskip
+\noindent\textbf{Step 4: Drift relation.}  
+Substituting \eqref{eq:A217} into \eqref{eq:A214} yields
+\[
+f(x,t,T)
+=
+a_1(\tau)x-a_1(\tau)x_{e,\tau}+x'_{e,\tau},
+\]
+that is,
+\[
+f(x,t,T)
+=
+a_1(\tau)\bigl(x-x_{e,\tau}\bigr)+x'_{e,\tau}.
+\tag{A.2.18}
+\]
+Identifying \(x\) with the state variable \(x_{t,T}\) gives
+\eqref{eq:eqdrift}.
+
+\medskip
+\noindent\textbf{Step 5: Diffusion relation.}  
+Using the affine diffusion form from Statement~\ref{stmt:affineforms},
+\[
+g(x,t,T)=a(\tau)x+b(\tau),
+\tag{A.2.19}
+\]
+together with the proportionality hypothesis
+\[
+b(\tau)=\frac{a(\tau)}{a_1(\tau)}\,b_1(\tau),
+\tag{A.2.20}
+\]
+and substituting \eqref{eq:A217}, one finds
+\[
+b(\tau)
+=
+\frac{a(\tau)}{a_1(\tau)}
+\Bigl(-\,a_1(\tau)x_{e,\tau}+x'_{e,\tau}\Bigr)
+=
+-\,a(\tau)x_{e,\tau}+\frac{a(\tau)}{a_1(\tau)}x'_{e,\tau}.
+\tag{A.2.21}
+\]
+Therefore
+\[
+g(x,t,T)
+=
+a(\tau)x-a(\tau)x_{e,\tau}+\frac{a(\tau)}{a_1(\tau)}x'_{e,\tau},
+\]
+i.e.
+\[
+g(x,t,T)
+=
+a(\tau)\bigl(x-x_{e,\tau}\bigr)
++
+\frac{a(\tau)}{a_1(\tau)}x'_{e,\tau}.
+\tag{A.2.22}
+\]
+Identifying \(x\) with the state variable \(x_{t,T}\) gives
+\eqref{eq:eqdiffusion}.
+
+\medskip
+This proves Statement~\ref{stmt:eqrelation}.
+% ============================================================
+\subsection{Proof of Statement \ref{stmt:expectation}}
+\label{appendix:A3}
+
+\textbf{Goal.}
+Show that, for fixed maturity \(T\),
+\[
+\mathbb{E}[x_{t,T}]
+=
+x_{e,T-t}
++
+\left(x_{t_0,T}-x_{e,T-t_0}\right)e^{-a_1(t-t_0)}.
+\]
+
+\medskip
+\noindent\textbf{Step 1: Start from the expectation dynamics.}
+By Statement \ref{stmt:expectation}, the expected forward rate satisfies
+\[
+\frac{\partial \mathbb{E}[x_{t,T}]}{\partial t}
+=
+-a_1\bigl(\mathbb{E}[x_{t,T}] - x_{e,T-t}\bigr)
++
+\frac{\partial x_{e,T-t}}{\partial t},
+\]
+where \(a_1>0\) is constant.
+
+\medskip
+\noindent\textbf{Step 2: Define the deviation from equilibrium.}
+Let
+\[
+z(t):=\mathbb{E}[x_{t,T}] - x_{e,T-t}.
+\]
+Then
+\[
+\frac{dz(t)}{dt}
+=
+\frac{\partial \mathbb{E}[x_{t,T}]}{\partial t}
+-
+\frac{\partial x_{e,T-t}}{\partial t}.
+\]
+Substituting the expectation dynamics gives
+\[
+\frac{dz(t)}{dt}
+=
+-a_1\bigl(\mathbb{E}[x_{t,T}] - x_{e,T-t}\bigr)
+=
+-a_1 z(t).
+\]
+
+\medskip
+\noindent\textbf{Step 3: Solve the differential equation.}
+The solution is
+\[
+z(t)=z(t_0)e^{-a_1(t-t_0)}.
+\]
+Hence
+\[
+\mathbb{E}[x_{t,T}] - x_{e,T-t}
+=
+\left(\mathbb{E}[x_{t_0,T}] - x_{e,T-t_0}\right)e^{-a_1(t-t_0)}.
+\]
+
+\medskip
+\noindent\textbf{Step 4: Apply the initial condition.}
+At time \(t_0\), the forward rate is known, so
+\[
+\mathbb{E}[x_{t_0,T}] = x_{t_0,T}.
+\]
+Therefore
+\[
+\mathbb{E}[x_{t,T}] - x_{e,T-t}
+=
+\left(x_{t_0,T} - x_{e,T-t_0}\right)e^{-a_1(t-t_0)}.
+\]
+Rearranging yields
+\begin{equation}
+\mathbb{E}[x_{t,T}]
+=
+x_{e,T-t}
++
+\left(x_{t_0,T}-x_{e,T-t_0}\right)e^{-a_1(t-t_0)}.
+\tag{A.3.1}\label{eq:A31}
+\end{equation}
+
+This proves Statement \ref{stmt:expectation}.
+% ============================================================
+% ============================================================
+\subsection{Proof of Statement~\ref{stmt:a1eqasq}}
+\label{appendix:A4}
+
+\textbf{Goal.}
+Show that equilibrium transport consistency requires
+\[
+a_1=a^2.
+\]
+
+\medskip
+\noindent\textbf{Step 1: Start from the variance dynamics.}
+Let
+\[
+V(t,T):=\operatorname{Var}(x_{t,T}).
+\]
+From the affine diffusion specification, the forward rate satisfies
+\[
+dx_{t,T}
+=
+\bigl(-a_1x_{t,T}+a_1x_{e,T-t}+\partial_t x_{e,T-t}\bigr)\,dt
++
+\bigl(a x_{t,T}+b(T-t)\bigr)\,dW_t,
+\]
+where, by Statement~\ref{stmt:eqrelation},
+\[
+b(T-t)=-a\,x_{e,T-t}+\frac{1}{a}x'_{e,T-t}.
+\]
+
+\medskip
+\noindent\textbf{Step 2: Derive the second-moment equation.}
+Applying It\^o's formula to \(x_{t,T}^2\) and taking expectations gives
+\begin{align}
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}^2]
+&=
+2\,\mathbb{E}\!\left[x_{t,T}
+\bigl(-a_1x_{t,T}+a_1x_{e,T-t}+\partial_t x_{e,T-t}\bigr)\right]
++
+\mathbb{E}\!\left[\bigl(a x_{t,T}+b(T-t)\bigr)^2\right]
+\nonumber\\
+&=
+(-2a_1+a^2)\mathbb{E}[x_{t,T}^2]
++
+\bigl(2a_1x_{e,T-t}+2\partial_t x_{e,T-t}+2ab(T-t)\bigr)\mathbb{E}[x_{t,T}]
++
+b(T-t)^2.
+\tag{A.4.1}\label{eq:A41}
+\end{align}
+
+\medskip
+\noindent\textbf{Step 3: Pass from the second moment to the variance.}
+Since
+\[
+V(t,T)=\mathbb{E}[x_{t,T}^2]-\mathbb{E}[x_{t,T}]^2,
+\]
+differentiate with respect to \(t\):
+\[
+\frac{\partial V}{\partial t}
+=
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}^2]
+-
+2\,\mathbb{E}[x_{t,T}]
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}].
+\]
+Using Statement~\ref{stmt:expectation},
+\[
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}]
+=
+-a_1\bigl(\mathbb{E}[x_{t,T}]-x_{e,T-t}\bigr)
++
+\partial_t x_{e,T-t},
+\tag{A.4.2}\label{eq:A42}
+\]
+and substituting \eqref{eq:A41} and \eqref{eq:A42}, the mixed terms cancel. This yields
+\[
+\frac{\partial V}{\partial t}
+=
+2(a^2-a_1)V
++
+\bigl(a\,x_{e,T-t}+b(T-t)\bigr)^2.
+\tag{A.4.3}\label{eq:A43}
+\]
+
+\medskip
+\noindent\textbf{Step 4: Use the equilibrium diffusion relation.}
+From Statement~\ref{stmt:eqrelation},
+\[
+b(T-t)=-a\,x_{e,T-t}+\frac{1}{a}x'_{e,T-t}.
+\]
+Hence
+\[
+a\,x_{e,T-t}+b(T-t)=\frac{1}{a}x'_{e,T-t},
+\]
+so \eqref{eq:A43} becomes
+\[
+\frac{\partial V}{\partial t}
+=
+2(a^2-a_1)V
++
+\frac{1}{a^2}\bigl(x'_{e,T-t}\bigr)^2.
+\tag{A.4.4}\label{eq:A44}
+\]
+
+\medskip
+\noindent\textbf{Step 5: Impose equilibrium transport consistency.}
+Under equilibrium transport, admissible term-structure objects depend on calendar time and maturity only through
+\[
+\tau:=T-t.
+\]
+In particular, the variance must satisfy
+\[
+V(t,T)=\widetilde V(\tau)
+\]
+for some function \(\widetilde V\). Therefore
+\[
+\frac{\partial V}{\partial t}=-\widetilde V'(\tau),
+\]
+and \eqref{eq:A44} becomes
+\[
+-\widetilde V'(\tau)
+=
+2(a^2-a_1)\widetilde V(\tau)
++
+\frac{1}{a^2}\bigl(x_e'(\tau)\bigr)^2.
+\tag{A.4.5}\label{eq:A45}
+\]
+
+Now suppose \(a_1\neq a^2\). Then the coefficient on \(\widetilde V(\tau)\) in \eqref{eq:A45} is nonzero, so the variance dynamics contain an additional exponential decay or growth term that is independent of the equilibrium transport speed \(a\). This breaks the required one-parameter transport structure: the evolution of the variance would no longer be governed solely by the same decay scale that determines the equilibrium forward-curve propagation.
+
+Therefore the transport-consistent equilibrium representation is possible only if
+\[
+2(a^2-a_1)=0.
+\]
+Hence
+\[
+a_1=a^2.
+\tag{A.4.6}\label{eq:A46}
+\]
+
+This proves Statement~\ref{stmt:a1eqasq}.
+
+% ============================================================
+\subsection{Proof of Statement~\ref{stmt:interim}}
+\label{appendix:A5}
+
+\textbf{Goal.}
+Show that once the baseline exponential equilibrium specification is
+imposed, consistency of the equilibrium relations determines the interim
+forms \eqref{eq:interim-f}--\eqref{eq:interim-g}.
+
+\medskip
+\noindent\textbf{Step 1: Start from the equilibrium drift and diffusion relations.}
+
+From Appendix~\ref{appendix:A2}, the equilibrium relations are
+\begin{align}
+f(x,t,T)
+&=
+a_1 x_{t,T}
+-
+a_1 x_{e,T-t}
+-
+\frac{\partial x_{e,T-t}}{\partial t},
+\tag{A.5.1a}\label{eq:A5eqdrift}
+\\[0.4em]
+g(x,t,T)
+&=
+a x_{t,T}
+-
+a x_{e,T-t}
+-
+\frac{a}{a_1}\frac{\partial x_{e,T-t}}{\partial t}.
+\tag{A.5.1b}\label{eq:A5eqdiff}
+\end{align}
+Since \(\tau=T-t\), we have
+\[
+-\frac{\partial x_{e,T-t}}{\partial t}
+=
+\frac{\partial x_{e,T-t}}{\partial T}.
+\]
+Using Statement~\ref{stmt:a1eqasq}, namely \(a_1=a^2\), this becomes
+\begin{align}
+f(x,t,T)
+&=
+a^{2}x_{t,T}
+-
+a^{2}x_{e,T-t}
++
+\frac{\partial x_{e,T-t}}{\partial T},
+\tag{A.5.2a}\label{eq:A5fpre}
+\\[0.4em]
+g(x,t,T)
+&=
+a x_{t,T}
+-
+a x_{e,T-t}
++
+\frac{1}{a}\frac{\partial x_{e,T-t}}{\partial T}.
+\tag{A.5.2b}\label{eq:A5gpre}
+\end{align}
+
+\medskip
+\noindent\textbf{Step 2: Impose the baseline exponential equilibrium specification.}
+
+At this stage, no unique functional form for \(x_{e,T-t}\) has been
+derived. We now impose the baseline exponential equilibrium specification
+used in the main text:
+\begin{equation}
+x_{e,T-t}
+=
+x_{\infty}+A e^{-\lambda^{2}(T-t)}.
+\tag{A.5.3}\label{eq:A5xeTT}
+\end{equation}
+Equivalently, in the maturity variable \(\tau=T-t\),
+\begin{equation}
+x_{e,\tau}=x_{\infty}+A e^{-\lambda^{2}\tau}.
+\tag{A.5.4}\label{eq:A5xe}
+\end{equation}
+Differentiating \eqref{eq:A5xeTT} with respect to \(T\) yields
+\begin{equation}
+\frac{\partial x_{e,T-t}}{\partial T}
+=
+-\lambda^{2}A e^{-\lambda^{2}(T-t)}.
+\tag{A.5.5}\label{eq:A5xediff}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 3: Substitute into the equilibrium relations.}
+
+Substituting \eqref{eq:A5xeTT} and \eqref{eq:A5xediff} into
+\eqref{eq:A5fpre} gives
+\begin{align}
+f(x,t,T)
+&=
+a^{2}x_{t,T}
+-
+a^{2}\!\left(x_{\infty}+A e^{-\lambda^{2}(T-t)}\right)
+-
+\lambda^{2}A e^{-\lambda^{2}(T-t)}
+\nonumber\\
+&=
+a^{2}x_{t,T}
+-
+a^{2}x_{\infty}
+-
+(\lambda^{2}+a^{2})A e^{-\lambda^{2}(T-t)}.
+\tag{A.5.6}\label{eq:A51}
+\end{align}
+Likewise, substituting \eqref{eq:A5xeTT} and \eqref{eq:A5xediff} into
+\eqref{eq:A5gpre} gives
+\begin{align}
+g(x,t,T)
+&=
+a x_{t,T}
+-
+a\!\left(x_{\infty}+A e^{-\lambda^{2}(T-t)}\right)
+-
+\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\nonumber\\
+&=
+a x_{t,T}
+-
+a x_{\infty}
+-
+\left(a+\frac{\lambda^{2}}{a}\right)
+A e^{-\lambda^{2}(T-t)}.
+\tag{A.5.7}\label{eq:A52}
+\end{align}
+
+\medskip
+\noindent\textbf{Conclusion.}
+
+Thus, once the baseline exponential equilibrium curve is imposed,
+consistency of the equilibrium drift and diffusion relations yields the
+interim forms \eqref{eq:interim-f}--\eqref{eq:interim-g}. This is a
+conditional identification result, not a uniqueness statement about all
+admissible equilibrium curves.
+
+% ============================================================
+\subsection{Proof of Statement~\ref{stmt:variance}}
+\label{appendix:A6}
+
+\textbf{Goal.}
+Derive the variance evolution implied by the interim drift and diffusion
+forms obtained under the baseline exponential equilibrium specification.
+
+\medskip
+\noindent\textbf{Step 1: Start from the interim diffusion form.}
+
+From Appendix~\ref{appendix:A5}, once the baseline exponential
+equilibrium curve is imposed, the diffusion coefficient is
+\begin{equation}
+g(x,t,T)
+=
+a x_{t,T}
+-
+a x_{\infty}
+-
+\left(a+\frac{\lambda^{2}}{a}\right)
+A e^{-\lambda^{2}(T-t)}.
+\tag{A.6.1}\label{eq:A61}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 2: Decompose the state into mean plus fluctuation.}
+
+Let
+\[
+m(t,T):=\mathbb{E}[x_{t,T}].
+\]
+Under the same baseline specification, the mean forward curve has the
+representation
+\begin{equation}
+m(t,T)
+=
+x_{\infty}
++
+A e^{-\lambda^{2}(T-t)}
++
+D(t,T),
+\tag{A.6.2}\label{eq:A62}
+\end{equation}
+where
+\begin{equation}
+D(t,T)
+=
+\left(
+x_{t_0,T}
+-
+x_{\infty}
+-
+A e^{-\lambda^{2}(T-t_0)}
+\right)e^{-a^{2}(t-t_0)}.
+\tag{A.6.3}\label{eq:A63}
+\end{equation}
+
+Now define the centred fluctuation
+\[
+\widetilde{x}_{t,T}:=x_{t,T}-m(t,T),
+\qquad
+\mathbb{E}[\widetilde{x}_{t,T}]=0.
+\]
+Substituting \(x_{t,T}=m(t,T)+\widetilde{x}_{t,T}\) together with
+\eqref{eq:A62} into \eqref{eq:A61} gives
+\begin{align}
+g(x,t,T)
+&=
+a\bigl(m(t,T)+\widetilde{x}_{t,T}\bigr)
+-
+a x_{\infty}
+-
+\left(a+\frac{\lambda^{2}}{a}\right)A e^{-\lambda^{2}(T-t)}
+\nonumber\\
+&=
+a\widetilde{x}_{t,T}
++
+aD(t,T)
+-
+\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}.
+\tag{A.6.4}\label{eq:A64}
+\end{align}
+
+\medskip
+\noindent\textbf{Step 3: Apply the second-moment identity.}
+
+The second moment satisfies
+\begin{equation}
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}^{2}]
+=
+-2\,\mathbb{E}[x_{t,T}f(x,t,T)]
++
+2\,\mathbb{E}[g(x,t,T)^{2}].
+\tag{A.6.5}\label{eq:A65}
+\end{equation}
+
+Using
+\[
+\operatorname{Var}(x_{t,T})
+=
+\mathbb{E}[x_{t,T}^{2}] - m(t,T)^{2},
+\]
+we obtain
+\begin{align}
+\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})
+&=
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}^{2}]
+-
+\frac{\partial}{\partial t}m(t,T)^{2}
+\nonumber\\
+&=
+-2\Bigl(\mathbb{E}[x_{t,T}f(x,t,T)]-m(t,T)\mathbb{E}[f(x,t,T)]\Bigr)
++
+2\,\mathbb{E}[g(x,t,T)^{2}].
+\tag{A.6.6}\label{eq:A66}
+\end{align}
+
+From Appendix~\ref{appendix:A5}, the drift is affine:
+\[
+f(x,t,T)
+=
+a^{2}x_{t,T}
+-
+a^{2}x_{\infty}
+-
+(\lambda^{2}+a^{2})A e^{-\lambda^{2}(T-t)}.
+\]
+Therefore its covariance with \(x_{t,T}\) is simply
+\[
+\mathbb{E}[x_{t,T}f(x,t,T)]-m(t,T)\mathbb{E}[f(x,t,T)]
+=
+a^{2}\operatorname{Var}(x_{t,T}),
+\]
+and \eqref{eq:A66} becomes
+\begin{equation}
+\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})
+=
+-2a^{2}\operatorname{Var}(x_{t,T})
++
+2\,\mathbb{E}[g(x,t,T)^{2}].
+\tag{A.6.7}\label{eq:A67}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 4: Evaluate the diffusion-square expectation.}
+
+From \eqref{eq:A64}, write
+\[
+g(x,t,T)
+=
+a\widetilde{x}_{t,T}
++
+b(t,T),
+\qquad
+b(t,T):=
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}.
+\]
+Hence
+\begin{align}
+\mathbb{E}[g(x,t,T)^{2}]
+&=
+\mathbb{E}\!\left[\left(a\widetilde{x}_{t,T}+b(t,T)\right)^{2}\right]
+\nonumber\\
+&=
+a^{2}\mathbb{E}[\widetilde{x}_{t,T}^{2}]
++
+2ab(t,T)\mathbb{E}[\widetilde{x}_{t,T}]
++
+b(t,T)^{2}
+\nonumber\\
+&=
+a^{2}\operatorname{Var}(x_{t,T})
++
+\left(
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right)^{2},
+\tag{A.6.8}\label{eq:A68}
+\end{align}
+because \(\mathbb{E}[\widetilde{x}_{t,T}]=0\).
+
+Substituting \eqref{eq:A68} into \eqref{eq:A67} yields
+\begin{align}
+\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})
+&=
+-2a^{2}\operatorname{Var}(x_{t,T})
++
+2a^{2}\operatorname{Var}(x_{t,T})
+\nonumber\\
+&\quad
++
+2\left(
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right)^{2}
+\nonumber\\
+&=
+2\left(
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right)^{2}.
+\tag{A.6.9}\label{eq:A69}
+\end{align}
+
+\medskip
+\noindent\textbf{Conclusion.}
+
+Thus, under the baseline exponential equilibrium specification, the
+variance evolution implied by the interim affine forms is exactly
+\[
+\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})
+=
+2\left(
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right)^{2},
+\]
+which proves Statement~\ref{stmt:variance}.
+
+% ============================================================
+\subsection{Proof of Statement~\ref{stmt:msnr}}
+\label{appendix:A7}
+
+\textbf{Goal.}
+Derive the market signal-to-noise ratio.
+
+\medskip
+\noindent\textbf{Step 1: Start from the variance rate.}
+
+From Appendix~\ref{appendix:A6}, the instantaneous variance rate is
+\begin{equation}
+\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})
+=
+2\left(
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right)^{2}.
+\tag{A.7.1}\label{eq:A71}
+\end{equation}
+Hence the instantaneous noise scale is
+\begin{equation}
+\sqrt{\frac{\partial}{\partial t}\operatorname{Var}(x_{t,T})}
+=
+\sqrt{2}\,
+\left|
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right|.
+\tag{A.7.2}\label{eq:A72}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 2: Evaluate the drift on the mean branch.}
+
+From Appendix~\ref{appendix:A5}, the interim drift is
+\begin{equation}
+f(x,t,T)
+=
+a^{2}x_{t,T}
+-
+a^{2}x_{\infty}
+-
+(\lambda^{2}+a^{2})A e^{-\lambda^{2}(T-t)}.
+\tag{A.7.3}\label{eq:A73}
+\end{equation}
+
+Let
+\[
+m(t,T):=\mathbb{E}[x_{t,T}]
+=
+x_{\infty}+A e^{-\lambda^{2}(T-t)}+D(t,T),
+\]
+as obtained in Statement~\ref{stmt:variance}. Evaluating the drift along
+this mean branch gives
+\begin{align}
+f\bigl(m(t,T),t,T\bigr)
+&=
+a^{2}\Bigl(x_{\infty}+A e^{-\lambda^{2}(T-t)}+D(t,T)\Bigr)
+-
+a^{2}x_{\infty}
+-
+(\lambda^{2}+a^{2})A e^{-\lambda^{2}(T-t)}
+\nonumber\\
+&=
+a^{2}D(t,T)-\lambda^{2}A e^{-\lambda^{2}(T-t)}
+\nonumber\\
+&=
+a\left(
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right).
+\tag{A.7.4}\label{eq:A74}
+\end{align}
+
+Therefore the instantaneous signal scale, defined by the magnitude of the
+drift along the mean branch, is
+\begin{equation}
+\left|f\bigl(m(t,T),t,T\bigr)\right|
+=
+a\left|
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right|.
+\tag{A.7.5}\label{eq:A75}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 3: Form the ratio.}
+
+Hence
+\begin{align}
+\mathrm{MSNR}
+&=
+\frac{\left|f\bigl(m(t,T),t,T\bigr)\right|}
+{\sqrt{\partial_t\operatorname{Var}(x_{t,T})}}
+\nonumber\\
+&=
+\frac{
+a\left|
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right|
+}{
+\sqrt{2}\left|
+aD(t,T)-\frac{\lambda^{2}}{a}A e^{-\lambda^{2}(T-t)}
+\right|
+}
+\nonumber\\
+&=
+\frac{a}{\sqrt{2}}.
+\tag{A.7.6}\label{eq:A76}
+\end{align}
+
+\medskip
+\noindent\textbf{Conclusion.}
+
+Therefore,
+\[
+\mathrm{MSNR}=\frac{a}{\sqrt{2}},
+\]
+which proves Statement~\ref{stmt:msnr}.
+
+% ============================================================
+
+
+
+% ============================================================
+% Appendix B
+%==============================================================
+
+\section{Solution to the KFE in the equilibrium regime}
+\label{appendix:B}
+
+% ------------------------------------------------------------
+\subsection{Full Frobenius Proof of the equilibrium regime PDF}
+\label{appendix:B1}
+
+We begin from the transformed KFE in the shifted variable
+\[
+\widetilde{x}
+=
+x_{t,T}
+-
+x_{\infty}\!\left(1-e^{-\lambda^{2}(T-t)}\right),
+\]
+so that the equilibrium mean has been removed, but without yet imposing any
+relation between \(\lambda\) and \(a\). In these coordinates the KFE takes the form
+\begin{equation}
+\frac{\partial \varphi}{\partial t}
+=
+a^{2}\widetilde{x}^{2}\varphi_{\widetilde{x}\widetilde{x}}
++
+5a^{2}\widetilde{x}\,\varphi_{\widetilde{x}}
++
+3a^{2}\varphi
+-
+\lambda^{2}x_{\infty}e^{-\lambda^{2}(T-t)}\varphi_{\widetilde{x}}.
+\tag{B.1.1}\label{eq:B11}
+\end{equation}
+
+To analyse the singular structure at \(\widetilde{x}=0\), introduce the reciprocal
+variable
+\[
+z=\frac{1}{\widetilde{x}},
+\qquad
+z_{\widetilde{x}}=-z^{2},
+\qquad
+z_{\widetilde{x}\widetilde{x}}=2z^{3}.
+\]
+Using
+\[
+\varphi_{\widetilde{x}}=-z^{2}\varphi_{z},
+\qquad
+\varphi_{\widetilde{x}\widetilde{x}}
+=
+z^{4}\varphi_{zz}+2z^{3}\varphi_{z},
+\]
+equation \eqref{eq:B11} becomes
+\begin{equation}
+\frac{\partial \varphi}{\partial t}
+=
+a^{2}z^{2}\varphi_{zz}
+-
+3a^{2}z\varphi_{z}
++
+3a^{2}\varphi
++
+\lambda^{2}x_{\infty}e^{-\lambda^{2}(T-t)}z^{2}\varphi_{z}.
+\tag{B.1.2}\label{eq:B12}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 1: Frobenius expansion.}
+
+Seek a Frobenius series of the form
+\[
+\varphi(z,t,T)=\sum_{i=0}^{\infty} c_i(t)\,z^{i+m}.
+\]
+Then
+\[
+\varphi_z
+=
+\sum_{i=0}^{\infty}(i+m)c_i(t)\,z^{i+m-1},
+\qquad
+\varphi_{zz}
+=
+\sum_{i=0}^{\infty}(i+m)(i+m-1)c_i(t)\,z^{i+m-2}.
+\]
+Substituting into \eqref{eq:B12} and matching coefficients of \(z^{i+m}\) yields
+\begin{equation}
+\frac{\partial c_i}{\partial t}
+=
+a^{2}(i+m-1)(i+m-3)c_i
++
+\lambda^{2}x_{\infty}e^{-\lambda^{2}(T-t)}(i+m-1)c_{i-1},
+\tag{B.1.3}\label{eq:B13}
+\end{equation}
+with \(c_{-1}\equiv 0\).
+
+\medskip
+\noindent\textbf{Step 2: Separate the time dependence.}
+
+Write
+\[
+c_i(t)=c_i^{*}\,x_{\infty}^{\,i+n}e^{-(i+n)\lambda^{2}(T-t)}.
+\]
+Then
+\[
+\frac{\partial c_i}{\partial t}=(i+n)\lambda^{2}c_i(t).
+\]
+Substituting into \eqref{eq:B13} and cancelling the common factor
+\(x_{\infty}^{\,i+n}e^{-(i+n)\lambda^{2}(T-t)}\) gives
+\[
+(i+n)\lambda^{2}c_i^{*}
+=
+a^{2}(i+m-1)(i+m-3)c_i^{*}
++
+\lambda^{2}(i+m-1)c_{i-1}^{*}.
+\]
+At \(i=0\), since \(c_{-1}^{*}=0\), this reduces to the indicial relation
+\begin{equation}
+n\,\frac{\lambda^{2}}{a^{2}}=(m-1)(m-3).
+\tag{B.1.4}\label{eq:B14}
+\end{equation}
+For \(i\ge 1\), subtracting \eqref{eq:B14} gives
+\[
+\lambda^{2} i\,c_i^{*}
+=
+a^{2}i(i+2m-4)c_i^{*}
++
+\lambda^{2}(i+m-1)c_{i-1}^{*},
+\]
+hence
+\begin{equation}
+\frac{c_i^{*}}{c_{i-1}^{*}}
+=
+-\frac{\frac{\lambda^{2}}{a^{2}}(i+m-1)}{i\left(i+2m-4-\frac{\lambda^{2}}{a^{2}}\right)}.
+\tag{B.1.5}\label{eq:B15}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 3: Characterise the non-terminating admissible branch.}
+
+Let
+\[
+r:=\frac{\lambda^{2}}{a^{2}}.
+\]
+For the Frobenius series to sum to a single inverse-gamma-type branch,
+the coefficient ratio needs to have the form
+\[
+\frac{c_i^{*}}{c_{i-1}^{*}}=-\frac{\beta}{i}
+\]
+for some constant \(\beta>0\); equivalently, the additional affine factor
+in \eqref{eq:B15} needs to reduce to an \(i\)-independent constant. Since the
+numerator and denominator in \eqref{eq:B15} are both affine in \(i\) with
+the same slope, this occurs if and only if they are identical, namely
+\[
+i+m-1=i+2m-4-r.
+\]
+Therefore
+\begin{equation}
+m=3+r.
+\tag{B.1.6}\label{eq:B16}
+\end{equation}
+Substituting \eqref{eq:B16} into \eqref{eq:B15} gives
+\begin{equation}
+\frac{c_i^{*}}{c_{i-1}^{*}}=-\frac{r}{i},
+\qquad
+c_i^{*}=\frac{(-r)^i}{i!}\,c_0^{*}.
+\tag{B.1.7}\label{eq:B17}
+\end{equation}
+The indicial relation \eqref{eq:B14} then yields
+\begin{equation}
+n=r+2.
+\tag{B.1.8}\label{eq:B18}
+\end{equation}
+Hence the admissible branch is the one-parameter family
+\[
+\varphi(z,t,T)
+=
+c_0^{*}x_{\infty}^{r+2}z^{r+3}e^{-(r+2)\lambda^{2}(T-t)}
+\exp\!\bigl[-r x_{\infty}e^{-\lambda^{2}(T-t)}z\bigr].
+\]
+Returning to \(\widetilde{x}=1/z\), this becomes
+\begin{equation}
+\varphi(\widetilde{x},t,T)
+=
+c_0^{*}x_{\infty}^{r+2}e^{-(r+2)\lambda^{2}(T-t)}
+\widetilde{x}^{-(r+3)}
+\exp\!\left(-\frac{r x_{\infty}e^{-\lambda^{2}(T-t)}}{\widetilde{x}}\right).
+\tag{B.1.9}\label{eq:B19}
+\end{equation}
+Thus the Frobenius construction yields an inverse-gamma family with shape
+parameter
+\[
+\alpha=r+2.
+\]
+
+\medskip
+\noindent\textbf{Step 4: Select the structural branch.}
+
+The branch retained in the manuscript is the order-3 shifted
+inverse-gamma law, equivalently the branch with tail
+\(\widetilde{x}^{-4}\) and finite second moment. Since \eqref{eq:B19} has tail exponent \(-(r+3)\), this requires
+\[
+r+3=4,
+\qquad\text{so that}\qquad
+r=1.
+\]
+Therefore
+\begin{equation}
+\boxed{\lambda^{2}=a^{2}}.
+\tag{B.1.10}\label{eq:B110}
+\end{equation}
+From \eqref{eq:B16} and \eqref{eq:B18} we then obtain
+\[
+m=4,
+\qquad
+n=3.
+\]
+The recurrence \eqref{eq:B17} reduces to
+\[
+\frac{c_i^{*}}{c_{i-1}^{*}}=-\frac{1}{i},
+\qquad
+c_i^{*}=\frac{(-1)^i}{i!}\,c_0^{*},
+\]
+so the Frobenius series sums to
+\[
+\varphi(z,t,T)
+=
+c_0^{*}x_{\infty}^{3}z^{4}e^{-3a^{2}(T-t)}
+\exp\!\bigl[-x_{\infty}e^{-a^{2}(T-t)}z\bigr].
+\]
+Returning to \(\widetilde{x}=1/z\) gives
+\begin{equation}
+\varphi(\widetilde{x},t,T)
+=
+c_0^{*}
+\frac{x_{\infty}^{3}e^{-3a^{2}(T-t)}}{\widetilde{x}^{4}}
+\exp\!\left(
+-\frac{x_{\infty}e^{-a^{2}(T-t)}}{\widetilde{x}}
+\right).
+\tag{B.1.11}\label{eq:B111}
+\end{equation}
+Normalisation fixes \(c_0^{*}=1/\Gamma(3)\), and therefore
+\begin{equation}
+\boxed{
+\varphi(\widetilde{x},t,T)
+=
+\frac{x_{\infty}^{3}e^{-3a^{2}(T-t)}}{\Gamma(3)\,\widetilde{x}^{4}}
+\exp\!\left(
+-\frac{x_{\infty}e^{-a^{2}(T-t)}}{\widetilde{x}}
+\right)
+}
+\tag{B.1.12}\label{eq:B112}
+\end{equation}
+which is the shifted inverse-gamma distribution of order \(3\).
+
+% ------------------------------------------------------------
+\subsection{Direct Laplace-Transform Derivation of the MGF}
+\label{appendix:B2}
+
+Let
+\[
+\beta_{t,T}
+=
+x_{\infty}e^{-a^{2}(T-t)}.
+\]
+
+From \eqref{eq:B112}, the shifted variable \(\widetilde{x}\) has density
+\[
+\varphi(\widetilde{x},t,T)
+=
+\frac{\beta_{t,T}^{3}}{\Gamma(3)\,\widetilde{x}^{4}}
+\exp\!\left(
+-\frac{\beta_{t,T}}{\widetilde{x}}
+\right),
+\qquad
+\widetilde{x}>0.
+\]
+
+We therefore compute its Laplace transform directly. For \(q>0\), define
+\[
+\widehat{\varphi}(q,t,T)
+=
+\int_{0}^{\infty} e^{-q\widetilde{x}}\varphi(\widetilde{x},t,T)\,d\widetilde{x}.
+\]
+
+Substituting the density gives
+\begin{equation}
+\widehat{\varphi}(q,t,T)
+=
+\frac{\beta_{t,T}^{3}}{\Gamma(3)}
+\int_{0}^{\infty}
+\widetilde{x}^{-4}
+\exp\!\left(
+-q\widetilde{x}
+-\frac{\beta_{t,T}}{\widetilde{x}}
+\right)
+d\widetilde{x}.
+\tag{B.2.1}
+\end{equation}
+
+Using the standard integral identity
+\[
+\int_{0}^{\infty}
+x^{\nu-1}
+\exp\!\left(-\mu x-\eta/x\right)\,dx
+=
+2\left(\frac{\eta}{\mu}\right)^{\nu/2}
+K_{\nu}\!\left(2\sqrt{\mu\eta}\right),
+\]
+with \(\nu=-3\), \(\mu=q\), and \(\eta=\beta_{t,T}\), and using
+\(K_{-\nu}=K_{\nu}\), we obtain
+\begin{equation}
+\widehat{\varphi}(q,t,T)
+=
+\frac{2\beta_{t,T}^{3}}{\Gamma(3)}
+\left(\frac{q}{\beta_{t,T}}\right)^{3/2}
+K_{3}\!\left(2\sqrt{\beta_{t,T}q}\right).
+\tag{B.2.2}
+\end{equation}
+
+Since \(\Gamma(3)=2\), this simplifies to
+\begin{equation}
+\widehat{\varphi}(q,t,T)
+=
+(\beta_{t,T}q)^{3/2}
+K_{3}\!\left(2\sqrt{\beta_{t,T}q}\right)
+=
+\left(
+x_{\infty}e^{-a^{2}(T-t)}q
+\right)^{3/2}
+K_{3}\!\left(
+2\sqrt{x_{\infty}e^{-a^{2}(T-t)}q}
+\right).
+\tag{B.2.3}
+\end{equation}
+
+If one prefers the moment-generating-function variable \(s\), write \(q=-s\).
+Then the transform is well defined for \(s<0\) and becomes
+\begin{equation}
+\widetilde{\varphi}(s,t,T)
+=
+\left(
+-x_{\infty}e^{-a^{2}(T-t)}s
+\right)^{3/2}
+K_{3}\!\left(
+2\sqrt{-x_{\infty}e^{-a^{2}(T-t)}s}
+\right),
+\qquad s<0.
+\tag{B.2.4}
+\end{equation}
+
+This is exactly the Laplace transform, equivalently the MGF evaluated on its
+negative argument, of the inverse-gamma law of order~3.
+% ------------------------------------------------------------
+
+\subsection{Derivation of the Identified Expectation Formula}
+\label{appendix:B3}
+
+\textbf{Goal.}
+Show that, in the baseline identified case,
+\begin{equation}
+\mathbb{E}\left[x_{t,T}\right]
+=
+x_{t_0,t_0}e^{-a^2\left(T+t-2t_0\right)}
++
+x_\infty
+-
+x_\infty e^{-a^2\left(T-t_0\right)}.
+\tag{B.3.1}\label{eq:B31}
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 1: Start from equation \((2.3.7)\).}
+We have
+\[
+\frac{\partial \mathbb{E}\left[x_{t,T}\right]}{\partial t}
+=
+-a^2
+\left[
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
+-
+\frac{x_\infty}{2}e^{a^2(t-t_0)}
+\right]
+e^{-a^2(T-t_0)}.
+\]
+
+\medskip
+\noindent\textbf{Step 2: Integrate with respect to time.}
+Integrating from \(t_0\) to \(t\) gives
+\[
+\int_{t_0}^{t}\frac{\partial \mathbb{E}\left[x_{s,T}\right]}{\partial s}\,ds
+=
+-a^2 e^{-a^2(T-t_0)}
+\int_{t_0}^{t}
+\left[
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(s-t_0)}
+-
+\frac{x_\infty}{2}e^{a^2(s-t_0)}
+\right]ds.
+\]
+Hence
+\[
+\mathbb{E}\left[x_{t,T}\right]-x_{t_0,T}
+=
+-a^2 e^{-a^2(T-t_0)}
+\int_{t_0}^{t}
+\left[
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(s-t_0)}
+-
+\frac{x_\infty}{2}e^{a^2(s-t_0)}
+\right]ds.
+\]
+
+\medskip
+\noindent\textbf{Step 3: Evaluate the integral.}
+Computing the integrals yields
+\[
+\mathbb{E}\left[x_{t,T}\right]-x_{t_0,T}
+=
+e^{-a^2(T-t_0)}
+\left[
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)\left(e^{-a^2(t-t_0)}-1\right)
++
+\frac{x_\infty}{2}\left(e^{-a^2(t-t_0)}-1\right)
+\right].
+\]
+Collecting terms,
+\[
+\mathbb{E}\left[x_{t,T}\right]-x_{t_0,T}
+=
+x_{t_0,t_0}e^{-a^2(T-t_0)}
+\left(e^{-a^2(t-t_0)}-1\right).
+\]
+Therefore,
+\[
+\mathbb{E}\left[x_{t,T}\right]
+=
+x_{t_0,T}
++
+x_{t_0,t_0}e^{-a^2(T-t_0)}
+\left(e^{-a^2(t-t_0)}-1\right).
+\]
+
+\medskip
+\noindent\textbf{Step 4: Substitute for \(x_{t_0,T}\).}
+Using
+\[
+x_{t_0,T}
+=
+(x_{t_0,t_0}-x_\infty)e^{-a^2(T-t_0)}+x_\infty,
+\]
+we obtain
+\begin{align}
+\mathbb{E}\left[x_{t,T}\right]
+&=
+(x_{t_0,t_0}-x_\infty)e^{-a^2(T-t_0)}
++x_\infty
++x_{t_0,t_0}e^{-a^2(T-t_0)}\left(e^{-a^2(t-t_0)}-1\right)
+\nonumber\\
+&=
+x_\infty
+-
+x_\infty e^{-a^2(T-t_0)}
++
+x_{t_0,t_0}e^{-a^2(T-t_0)}e^{-a^2(t-t_0)}
+\nonumber\\
+&=
+x_{t_0,t_0}e^{-a^2\left(T+t-2t_0\right)}
++x_\infty
+-x_\infty e^{-a^2\left(T-t_0\right)}.\notag
+\end{align}
+which is exactly \eqref{eq:B31}.
+% ============================================================
+\section{Relation to Conventional Interest Rates}
+\label{appendix:C}
+
+This appendix maps the instantaneous rolling forward rate (IRFR)
+to the conventional rate $r_{t,T}$ with remaining maturity $T-t$.
+Although the conventional rate fixes the maturity date $T$,
+the IRFRs appearing in its definition continue to "roll'' with time.
+We provide both discrete-time and continuous-time expressions and 
+derive several key results used in Section~\ref{sec:econ}.
+
+% ------------------------------------------------------------
+\subsection{Expected Value and Instantaneous Variance of the Conventional Rate}
+\label{appendix:C1}
+
+In this section, key calculations and representations are mapped from the IRFR
+onto the conventional interest rate \(r_{t,T}\) at time \(t\) with maturity \(T-t\).
+The reader should note that the forward rates appearing in this representation remain rolling in maturity.
+
+The IRFR relates to the conventional rate as
+\[
+r_{t,T}
+=
+\frac{1}{T-t}\sum_{S=t}^{T} x_{t,S}
+\]
+in discrete time, and
+\begin{equation}
+r_{t,T}
+=
+\frac{1}{T-t}\int_t^T x_{t,S}\,dS.
+\tag{C.1.1}\label{eq:C11}
+\end{equation}
+
+\medskip
+\noindent\textbf{Expected value.}
+
+To compute the expected value of \(r_{t,T}\), we begin from
+\begin{equation}
+\mathbb{E}[x_{t,T}]
+=
+x_{t_0,t_0}e^{-a^2(T+t-2t_0)}
++
+x_\infty\left(1-e^{-a^2(T-t_0)}\right).
+\tag{C.1.2}\label{eq:C12}
+\end{equation}
+
+Integrating over maturities,
+\[
+\mathbb{E}\!\left[\int_t^T x_{t,S}\,dS\right]
+=
+\int_t^T
+\left(
+x_{t_0,t_0}e^{-a^2(S+t-2t_0)}
++
+x_\infty\left(1-e^{-a^2(S-t_0)}\right)
+\right)dS.
+\]
+
+Evaluating term by term,
+\begin{align*}
+\int_t^T x_{t_0,t_0}e^{-a^2(S+t-2t_0)}\,dS
+&=
+\frac{x_{t_0,t_0}}{a^2}
+\left(
+e^{-2a^2(t-t_0)}
+-
+e^{-a^2(T+t-2t_0)}
+\right), \\
+\int_t^T x_\infty\,dS
+&=
+x_\infty (T-t), \\
+\int_t^T x_\infty e^{-a^2(S-t_0)}\,dS
+&=
+\frac{x_\infty}{a^2}
+\left(
+e^{-a^2(t-t_0)}
+-
+e^{-a^2(T-t_0)}
+\right).
+\end{align*}
+
+Hence,
+\begin{align}
+\mathbb{E}\!\left[\int_t^T x_{t,S}\,dS\right]
+&=
+\frac{x_{t_0,t_0}}{a^2}
+\left(
+e^{-2a^2(t-t_0)}
+-
+e^{-a^2(T+t-2t_0)}
+\right) \notag \\
+&\quad
++ x_\infty (T-t)
+- \frac{x_\infty}{a^2}
+\left(
+e^{-a^2(t-t_0)}
+-
+e^{-a^2(T-t_0)}
+\right).
+\tag{C.1.3}\label{eq:C13}
+\end{align}
+
+Using \eqref{eq:C11}, we obtain
+\begin{equation}
+\mathbb{E}[r_{t,T}]
+=
+x_\infty
++
+\frac{1}{a^2(T-t)}
+\left[
+x_{t_0,t_0}
+\left(
+e^{-2a^2(t-t_0)}
+-
+e^{-a^2(T+t-2t_0)}
+\right)
+-
+x_\infty
+\left(
+e^{-a^2(t-t_0)}
+-
+e^{-a^2(T-t_0)}
+\right)
+\right].
+\tag{C.1.4}\label{eq:C14}
+\end{equation}
+
+\medskip
+\noindent\textbf{Instantaneous variance.}
+
+To compute the instantaneous variance, consider two maturities \(T_1\) and \(T_2\),
+and define
+\[
+x_{t,T_1}
+=
+(x_{t,t}-x_\infty)e^{-a^2(T_1-t)} + x_\infty,
+\qquad
+y_{t,T_2}
+=
+(x_{t,t}-x_\infty)e^{-a^2(T_2-t)} + x_\infty.
+\]
+
+Then
+\[
+y_{t,T_2} - x_\infty
+=
+(x_{t,T_1}-x_\infty)e^{-a^2(T_2-T_1)}.
+\]
+
+Differentiating,
+\[
+\frac{\partial y_{t,T_2}}{\partial x_{t,T_1}}
+=
+e^{-a^2(T_2-T_1)}.
+\]
+
+Using covariance identities,
+\[
+\frac{\partial}{\partial t}
+\mathrm{Cov}(x_{t,T_1},y_{t,T_2})
+=
+e^{-a^2(T_2-T_1)}
+\frac{\partial}{\partial t}
+\mathrm{Var}(x_{t,T_1}).
+\]
+
+Using the variance identity,
+\[
+\mathrm{Var}(x+y)
+=
+\mathrm{Var}(x)+\mathrm{Var}(y)+2\mathrm{Cov}(x,y),
+\]
+we obtain
+\[
+\frac{\partial}{\partial t}
+\mathrm{Var}(x_{t,T_1}+y_{t,T_2})
+=
+\frac{\partial}{\partial t}
+\mathrm{Var}(x_{t,T_1})
+\left(1+e^{-a^2(T_2-T_1)}\right)^2.
+\]
+
+From the IRFR variance result,
+\[
+\frac{\partial}{\partial t}
+\mathrm{Var}(x_{t,T_1})
+=
+2a^2
+\left(
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
++
+\frac{x_\infty}{2}e^{a^2(t-t_0)}
+\right)^2
+e^{-2a^2(T_1-t_0)}.
+\]
+
+Hence, for the continuous case,
+\begin{align}
+\frac{\partial}{\partial t}
+\mathrm{Var}\!\left(\int_t^T x_{t,S}\,dS\right)
+&=
+2a^2
+\left(
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
++
+\frac{x_\infty}{2}e^{a^2(t-t_0)}
+\right)^2 \notag \\
+&\quad\times
+\left(\int_t^T e^{-a^2(S-t_0)}\,dS\right)^2.
+\tag{C.1.5}\label{eq:C15}
+\end{align}
+
+Using \eqref{eq:C11}, we obtain
+\begin{equation}
+\frac{\partial}{\partial t}\mathrm{Var}(r_{t,T})
+=
+\frac{2}{a^2(T-t)^2}
+\left(
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
++
+\frac{x_\infty}{2}e^{a^2(t-t_0)}
+\right)^2
+\left(
+e^{-a^2(t-t_0)}-e^{-a^2(T-t_0)}
+\right)^2.
+\tag{C.1.6}\label{eq:C16}
+\end{equation}
+
+An alternative representation is
+\begin{equation}
+\frac{\partial}{\partial t}\mathrm{Var}(r_{t,T})
+=
+\frac{2}{a^2(T-t)^2}
+\left(
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-2a^2(t-t_0)}
++\frac{x_\infty}{2}
+\right)^2
+\left(1-e^{-a^2(T-t)}\right)^2.
+\tag{C.1.7}\label{eq:C17}
+\end{equation}
+
+% ------------------------------------------------------------
+
+% ------------------------------------------------------------
+
+%============----------------------------====================
+% Appendix D
+%=======================================================
+
+
+\section{No-Arbitrage Justification of Rolling Maturity Invariance}
+\label{Appedix D}
+
+\subsection{Objective}
+\label{D.1}
+
+This appendix provides a rigorous no-arbitrage justification for Axiom 2 (Rolling Maturity Invariance). We show that if the stochastic dynamics of the instantaneous rolling forward rate (IRFR) depend on calendar time rather than solely on remaining maturity, then a self-financing trading strategy exists that generates arbitrage.
+
+\subsection{IRFR as a Tradable P\&L Object}
+\label{D.2}
+
+Recall the bond pricing identity:
+\[
+\int_t^T x_{t,S} \, dS = -\ln P(t,T).
+\]
+
+Differentiating with respect to time implies that infinitesimal changes in the IRFR correspond to changes in zero-coupon bond prices. Therefore, there exists a self-financing portfolio of bonds whose instantaneous profit and loss satisfies:
+\[
+dV_t = dx_{t,T}.
+\]
+
+Thus, increments of the IRFR are directly associated with tradable P\&L.
+
+\subsection{Two Equivalent Trading Strategies}
+\label{D.3}
+
+Fix a maturity horizon $\tau > 0$. Consider two strategies initiated at time $t$:
+
+\paragraph{Strategy A (Hold Strategy)}
+\begin{itemize}
+\item Enter a forward exposure corresponding to $x_{t,T}$, where $T = t + \tau$
+\item Hold continuously over $[t, t + \Delta t]$
+\end{itemize}
+
+The P\&L over the interval is:
+\[
+\Delta V^{\text{hold}} = x_{t+\Delta t, T} - x_{t,T}.
+\]
+
+\paragraph{Strategy B (Rolling Strategy)}
+\begin{itemize}
+\item Enter the same exposure at time $t$
+\item At time $t + \Delta t$, close the position
+\item Re-enter a forward exposure with the same remaining maturity $\tau$, i.e. $x_{t+\Delta t, T + \Delta t}$
+\end{itemize}
+
+The P\&L over the same interval is:
+\[
+\Delta V^{\text{roll}} = x_{t+\Delta t, T + \Delta t} - x_{t,T}.
+\]
+
+\subsection{No-Arbitrage Requirement}
+\label{D.4}
+
+Both strategies represent exposure to a forward rate with identical remaining maturity $\tau$. Therefore, no-arbitrage requires that they produce identical gains:
+\[
+\Delta V^{\text{hold}} = \Delta V^{\text{roll}}.
+\]
+
+Substituting expressions yields:
+\[
+x_{t+\Delta t, T} = x_{t+\Delta t, T + \Delta t}.
+\]
+
+Taking the limit as $\Delta t \to 0$, this implies:
+\[
+dx_{t,T} = dx_{t+dt, T+dt}
+\]
+in distribution.
+
+\subsection{Implication for Dynamics}
+\label{D.5}
+
+The above identity shows that the stochastic evolution of the IRFR must be invariant along trajectories of constant remaining maturity:
+\[
+\tau = T - t.
+\]
+
+Therefore, the drift and diffusion coefficients must satisfy:
+\[
+\mu(x,t,T) = \mu(x, \tau), \quad \sigma(x,t,T) = \sigma(x, \tau).
+\]
+
+This establishes Axiom 2.
+
+\subsection{Arbitrage Construction Under Violation}
+\label{D.6)}
+
+Suppose instead that dynamics depend explicitly on calendar time, so that:
+\[
+\mu(x,t,T) \neq \mu(x,t+\Delta t, T+\Delta t).
+\]
+
+Then:
+\[
+\mathbb{E}[\Delta V^{\text{hold}}] \neq \mathbb{E}[\Delta V^{\text{roll}}].
+\]
+
+Construct a portfolio:
+\begin{itemize}
+\item Long Strategy B (rolling)
+\item Short Strategy A (hold)
+\end{itemize}
+
+This portfolio:
+\begin{itemize}
+\item has zero initial cost
+\item eliminates common risk exposure
+\item yields strictly positive expected return
+\end{itemize}
+
+Since both strategies are replicable via bond portfolios, this constitutes an arbitrage.
+
+\subsection{Interpretation}
+\label{D.7}
+
+The result enforces a path-independence condition:
+\begin{quote}
+The P\&L from maintaining a forward exposure must be independent of whether the exposure is implemented continuously or via rolling.
+\end{quote}
+
+Equivalently, the stochastic law governing the IRFR must be invariant under the transformation:
+\[
+(t, T) \mapsto (t + \Delta t, T + \Delta t).
+\]
+
+This invariance is precisely the content of Axiom 2.
+
+\subsection{Conclusion}
+\label{D.8}
+
+We have shown that rolling--maturity invariance is not merely a modelling convenience but a necessary condition for the absence of dynamic arbitrage. Any dependence of IRFR dynamics on calendar time would permit the construction of self-financing trading strategies that generate arbitrage through rolling inconsistencies.
+
+Thus, Axiom 2 is justified as a no-arbitrage condition.
+
+\end{appendices}
+
+\end{document}
