@@ -1012,11 +1012,11 @@ Under the baseline specification, the expected forward curve evolves according t
 \begin{equation}
 \mathbb{E}[x_{t,T}]
 =
-x_{t_{0},t_{0}}e^{-a^{2}(T+t-2t_{0})}
+\Bigr(x_{t_{0},t_{0}}-\frac{1}{2}x_{\infty}\Bigl)e^{-a^{2}(T+t-2t_{0}\Big)}
 +
-x_{\infty}
+x_{\infty}\Bigr(1
 -
-x_{\infty} e^{-a^{2}(T-t_{0})}.
+\frac{1}{2}e^{-a^{2}(T-t)}\Bigl).
 \tag{6.3.1}\label{eq:forward-curve-dynamics}
 \end{equation}
 as shown in Appendix~\ref{appendix:B3}; see \eqref{eq:B3_final_expectation}. This expression shows that the mean forward curve is pinned down by the initial short-maturity condition \(x_{t_{0},t_{0}}\), the equilibrium regime level \(x_{\infty}\), and the common decay rate \(a^{2}\). For fixed \(T\), the first term decays with calendar time, while the second and third terms govern convergence toward the equilibrium regime level.
