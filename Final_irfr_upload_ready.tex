@@ -805,16 +805,16 @@ Now, under the baseline specification \(\lambda^{2}=a^{2}\), substitute
 \(A=-x_{\infty}/2\) into the interim forms
 \eqref{eq:interim-f}--\eqref{eq:interim-g}. This yields
 \begin{align}
-g(x,t,T)
+g(x_{t,T},t,T)
 &=
-a x
+a x_{t,T}
 -
 a x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right),
 \tag{5.3.1a}\label{eq:g-updated}
 \\[0.4em]
-f(x,t,T)
+f(x_{t,T},t,T)
 &=
-a^{2}x
+a^{2}x_{t,T}
 -
 a^{2}x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right).
 \tag{5.3.1b}\label{eq:f-updated}
@@ -901,15 +901,18 @@ Thus the entire forward curve is determined by the short-maturity value
 
 Under the baseline forward-curve form
 \eqref{eq:forwardcurve-final}, the expectation is given by
-Appendix~\ref{appendix:B3}; see \eqref{eq:B31}. Explicitly,
+Appendix~\ref{appendix:B3}; see \ref{eq:B3_final_expectation}. Explicitly,
 \begin{equation}
 \mathbb{E}[x_{t,T}]
 =
-x_{t_{0},t_{0}}e^{-a^{2}(T+t-2t_{0})}
+x_\infty
 +
-x_{\infty}
+e^{-a^2(T-t_0)}
+\left[
+\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
 -
-x_{\infty} e^{-a^{2}(T-t_{0})}.
+\frac{x_\infty}{2}e^{a^2(t-t_0)}
+\right].
 \tag{5.6.1}\label{eq:mean-final}
 \end{equation}
 
@@ -1016,7 +1019,7 @@ x_{\infty}
 x_{\infty} e^{-a^{2}(T-t_{0})}.
 \tag{6.3.1}\label{eq:forward-curve-dynamics}
 \end{equation}
-as shown in Appendix~\ref{appendix:B3}; see \eqref{eq:B31}. This expression shows that the mean forward curve is pinned down by the initial short-maturity condition \(x_{t_{0},t_{0}}\), the equilibrium regime level \(x_{\infty}\), and the common decay rate \(a^{2}\). For fixed \(T\), the first term decays with calendar time, while the second and third terms govern convergence toward the equilibrium regime level.
+as shown in Appendix~\ref{appendix:B3}; see \eqref{eq:B3_final_expectation}. This expression shows that the mean forward curve is pinned down by the initial short-maturity condition \(x_{t_{0},t_{0}}\), the equilibrium regime level \(x_{\infty}\), and the common decay rate \(a^{2}\). For fixed \(T\), the first term decays with calendar time, while the second and third terms govern convergence toward the equilibrium regime level.
 
 \medskip
 \noindent\textbf{Covariance-style structure and equilibrium.}
@@ -2417,119 +2420,287 @@ negative argument, of the inverse-gamma law of order~3.
 \label{appendix:B3}
 
 \textbf{Goal.}
-Show that, in the baseline identified case,
+Derive the closed-form expression for the conditional expectation
+$\mathbb{E}[x_{t,T}]$ under the identified baseline specification, using
+only the first-moment identity implied by the Kolmogorov Forward Equation.
+
+\medskip
+\noindent\textbf{Context.}
+Appendix~\ref{appendix:A3} establishes the general expectation dynamics under affine
+drift.  In this appendix we derive the explicit closed-form expectation
+after imposing the identified baseline relations
+$a_1 = \lambda^2 = a^2$ and the corresponding drift specification.
+
+\medskip
+\noindent\textbf{Step 1: First-moment identity.}
+For fixed maturity $T$, the Kolmogorov Forward Equation implies
 \begin{equation}
-\mathbb{E}\left[x_{t,T}\right]
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}]
 =
-x_{t_0,t_0}e^{-a^2\left(T+t-2t_0\right)}
-+
-x_\infty
--
-x_\infty e^{-a^2\left(T-t_0\right)}.
-\tag{B.3.1}\label{eq:B31}
+-\mathbb{E}\!\left[f(x_{t,T},t,T)\right].
+\label{eq:B3_first_moment_identity}
+\tag{B.3.1}
 \end{equation}
 
 \medskip
-\noindent\textbf{Step 1: Start from equation \((2.3.7)\).}
-We have
-\[
-\frac{\partial \mathbb{E}\left[x_{t,T}\right]}{\partial t}
+\noindent\textbf{Step 2: Identified drift.}
+Under the identified baseline structure section (\ref{subsec:updated-drift-diffusion}), the drift is
+\begin{equation}
+f(x_{t,T},t,T)
 =
--a^2
-\left[
-\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
+a^{2}x_{t,T}
 -
-\frac{x_\infty}{2}e^{a^2(t-t_0)}
-\right]
-e^{-a^2(T-t_0)}.
-\]
+a^{2}x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right).
+\label{eq:B3_drift}
+\tag{B.3.2}
+\end{equation}
 
 \medskip
-\noindent\textbf{Step 2: Integrate with respect to time.}
-Integrating from \(t_0\) to \(t\) gives
+\noindent\textbf{Step 3: Taking expectations.}
+Taking expectations of \ref{eq:B3_drift} and using linearity yields
 \[
-\int_{t_0}^{t}\frac{\partial \mathbb{E}\left[x_{s,T}\right]}{\partial s}\,ds
+\mathbb{E}[f(x_{t,T},t,T)]
 =
--a^2 e^{-a^2(T-t_0)}
-\int_{t_0}^{t}
-\left[
-\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(s-t_0)}
+a^{2}\mathbb{E}[x_{t,T}]
 -
-\frac{x_\infty}{2}e^{a^2(s-t_0)}
-\right]ds.
+a^{2}x_{\infty}\!\left(1-e^{-a^{2}(T-t)}\right).
 \]
-Hence
-\[
-\mathbb{E}\left[x_{t,T}\right]-x_{t_0,T}
-=
--a^2 e^{-a^2(T-t_0)}
-\int_{t_0}^{t}
-\left[
-\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(s-t_0)}
--
-\frac{x_\infty}{2}e^{a^2(s-t_0)}
-\right]ds.
-\]
-
-\medskip
-\noindent\textbf{Step 3: Evaluate the integral.}
-Computing the integrals yields
-\[
-\mathbb{E}\left[x_{t,T}\right]-x_{t_0,T}
-=
-e^{-a^2(T-t_0)}
-\left[
-\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)\left(e^{-a^2(t-t_0)}-1\right)
+Substituting into \eqref{eq:B3_first_moment_identity} gives the evolution
+equation
+\begin{equation}
+\frac{\partial}{\partial t}\mathbb{E}[x_{t,T}]
 +
-\frac{x_\infty}{2}\left(e^{-a^2(t-t_0)}-1\right)
-\right].
-\]
-Collecting terms,
-\[
-\mathbb{E}\left[x_{t,T}\right]-x_{t_0,T}
+a^{2}\mathbb{E}[x_{t,T}]
 =
-x_{t_0,t_0}e^{-a^2(T-t_0)}
-\left(e^{-a^2(t-t_0)}-1\right).
-\]
-Therefore,
-\[
-\mathbb{E}\left[x_{t,T}\right]
-=
-x_{t_0,T}
-+
-x_{t_0,t_0}e^{-a^2(T-t_0)}
-\left(e^{-a^2(t-t_0)}-1\right).
-\]
+a^{2}x_{\infty}
+-
+a^{2}x_{\infty}e^{-a^{2}(T-t)}.
+\label{eq:B3_expectation_ode}
+\tag{B.3.3}
+\end{equation}
 
 \medskip
-\noindent\textbf{Step 4: Substitute for \(x_{t_0,T}\).}
+\noindent\textbf{Step 4: Integrating factor.}
+Equation \eqref{eq:B3_expectation_ode} is a first-order linear ODE in
+$\mathbb{E}[x_{t,T}]$.  The integrating factor is $e^{a^{2}t}$, and
+multiplying \eqref{eq:B3_expectation_ode} by this factor yields
+\begin{equation}
+\frac{\partial}{\partial t}
+\left(
+e^{a^{2}t}\mathbb{E}[x_{t,T}]
+\right)
+=
+a^{2}x_{\infty}e^{a^{2}t}
+-
+a^{2}x_{\infty}e^{a^{2}t}e^{-a^{2}(T-t)}.
+\notag
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 5: Simplifying the forcing term.}
 Using
 \[
-x_{t_0,T}
-=
-(x_{t_0,t_0}-x_\infty)e^{-a^2(T-t_0)}+x_\infty,
+e^{a^{2}t}e^{-a^{2}(T-t)} = e^{-a^{2}T}e^{2a^{2}t},
 \]
-we obtain
-\begin{align}
-\mathbb{E}\left[x_{t,T}\right]
-&=
-(x_{t_0,t_0}-x_\infty)e^{-a^2(T-t_0)}
-+x_\infty
-+x_{t_0,t_0}e^{-a^2(T-t_0)}\left(e^{-a^2(t-t_0)}-1\right)
-\nonumber\\
-&=
-x_\infty
+the equation becomes
+\begin{equation}
+\frac{\partial}{\partial t}
+\left(
+e^{a^{2}t}\mathbb{E}[x_{t,T}]
+\right)
+=
+a^{2}x_{\infty}e^{a^{2}t}
 -
-x_\infty e^{-a^2(T-t_0)}
-+
-x_{t_0,t_0}e^{-a^2(T-t_0)}e^{-a^2(t-t_0)}
-\nonumber\\
+a^{2}x_{\infty}e^{-a^{2}T}e^{2a^{2}t}.
+\notag
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 6: Integration in time.}
+Integrating from $t_0$ to $t$ gives
+\begin{align}
+e^{a^{2}t}\mathbb{E}[x_{t,T}]
+-
+e^{a^{2}t_0}\mathbb{E}[x_{t_0,T}]
 &=
-x_{t_0,t_0}e^{-a^2\left(T+t-2t_0\right)}
-+x_\infty
--x_\infty e^{-a^2\left(T-t_0\right)}.\notag
+x_{\infty}\bigl(e^{a^{2}t}-e^{a^{2}t_0}\bigr)
+-
+\frac{x_{\infty}}{2}e^{-a^{2}T}
+\bigl(e^{2a^{2}t}-e^{2a^{2}t_0}\bigr).
+\notag
 \end{align}
-which is exactly \eqref{eq:B31}.
+
+\medskip
+\noindent\textbf{Step 7: Solving for the expectation.}
+Dividing through by $e^{a^{2}t}$ yields
+\begin{align}
+\mathbb{E}[x_{t,T}]
+&=
+\mathbb{E}[x_{t_0,T}]e^{-a^{2}(t-t_0)}
++
+x_{\infty}\bigl(1-e^{-a^{2}(t-t_0)}\bigr)
+\nonumber\\
+&\quad
+-
+\frac{x_{\infty}}{2}e^{-a^{2}(T-t)}
++
+\frac{x_{\infty}}{2}e^{-a^{2}(T+t-2t_0)}.
+\label{eq:B3_pre_final}
+\tag{B.3.4}
+\end{align}
+
+\medskip
+\noindent\textbf{Step 8: Imposing the initial condition.}
+Using
+\[
+\mathbb{E}[x_{t_0,T}] = x_{t_0,T}
+=
+(x_{t_0,t_0}-x_{\infty})e^{-a^{2}(T-t_0)} + x_{\infty},
+\]
+and simplifying \eqref{eq:B3_pre_final}, we obtain the final exponential
+form
+\begin{equation}
+\boxed{
+\mathbb{E}[x_{t,T}]
+=
+x_{\infty}
++
+e^{-a^{2}(T-t_0)}
+\left[
+\left(x_{t_0,t_0}-\frac{x_{\infty}}{2}\right)e^{-a^{2}(t-t_0)}
+-
+\frac{x_{\infty}}{2}e^{a^{2}(t-t_0)}
+\right].
+}
+\label{eq:B3_final_expectation}
+\tag{B.3.5}
+\end{equation}
+Hence, the expectation admits the hyperbolic form
+\begin{equation}
+\boxed{
+\mathbb{E}[x_{t,T}]
+=
+x_\infty
++
+e^{-a^2(T-t_0)}
+\Big[
+(x_{t_0,t_0}-x_\infty)\cosh\!\big(a^2(t-t_0)\big)
+-
+x_{t_0,t_0}\sinh\!\big(a^2(t-t_0)\big)
+\Big].
+}
+\tag{B.3.6}
+\end{equation}
+% 
+
+%---------------------------------------
+%\subsection{Derivation of the Identified Expectation Formula}
+%\label{appendix:B3}
+
+%\textbf{Goal.}
+%Derive the correct closed-form expression for the conditional expectation
+%\(\mathbb{E}[x_{t,T}]\) and present it in both exponential and hyperbolic form.
+
+%\medskip
+%\noindent\textbf{Step 1: Starting point.}
+%From equation \((2.3.7)\), the time derivative of the expectation %is
+%\begin{equation}
+%\frac{\partial \mathbb{E}[x_{t,T}]}{\partial t}
+%=
+%-a^2
+%\left[
+%\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
+%-
+%\frac{x_\infty}{2}e^{a^2(t-t_0)}
+%\right]
+%e^{-a^2(T-t_0)}.
+%\tag{B.3.1}
+%\end{equation}
+%We impose the boundary condition
+%\[
+%\mathbb{E}[x_{t_0,T}] = x_{t_0,T}.
+%\]
+
+%\medskip
+%\noindent\textbf{Step 2: Integration in $t$.}
+%Integrating from \(t_0\) to \(t\) yields
+%\begin{align}
+%\mathbb{E}[x_{t,T}] - x_{t_0,T}
+%&=
+%-a^2 e^{-a^2(T-t_0)}
+%\int_{t_0}^{t}
+%\left[
+%\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(s-t_0)}
+%-
+%\frac{x_\infty}{2}e^{a^2(s-t_0)}
+%\right] ds
+%\nonumber\\[4pt]
+%\mathbb{E}[x_{t,T}]
+%&=
+%e^{-a^2(T-t_0)}
+%\Bigg[
+%\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)
+%\left(e^{-a^2(t-t_0)}-1\right)
+%-
+%\frac{x_\infty}{2}
+%\left(e^{a^2(t-t_0)}-1\right)
+%\Bigg].
+%\label{eq:expectedvalue}
+%\tag{B.3.2}
+%\end{align}
+%
+%\medskip
+%\noindent\textbf{Step 3: Substituting the initial curve value.}
+%Using
+%\[
+%x_{t_0,T}
+%=
+%(x_{t_0,t_0}-x_\infty)e^{-a^2(T-t_0)} + x_\infty,
+%\]
+%and simplifying, we obtain
+%\begin{equation}
+%\mathbb{E}[x_{t,T}]
+%=
+%x_\infty
+%+
+%e^{-a^2(T-t_0)}
+%\left[
+%\left(x_{t_0,t_0}-\frac{x_\infty}{2}\right)e^{-a^2(t-t_0)}
+%-
+%\frac{x_\infty}{2}e^{a^2(t-t_0)}
+%\right].
+%\label{eq:expectationformuala}
+%\tag{B.3.3}
+%\end{equation}
+
+%\medskip
+%\noindent\textbf{Step 4: Hyperbolic representation.}
+%Let \(\tau = a^2(t-t_0)\). Using
+%\[
+%e^{\pm \tau} = \cosh\tau \pm \sinh\tau,
+%\]
+%the bracketed term in \ref{eq:expectationformuala} can be %rewritten as
+%\[
+%(x_{t_0,t_0}-x_\infty)\cosh\tau
+%-
+%x_{t_0,t_0}\sinh\tau.
+%\]
+%Hence, the expectation admits the hyperbolic form
+%\begin{equation}
+%\boxed{
+%\mathbb{E}[x_{t,T}]
+%=
+%x_\infty
+%+
+%e^{-a^2(T-t_0)}
+%\Big[
+%(x_{t_0,t_0}-x_\infty)\cosh\!\big(a^2(t-t_0)\big)
+%-
+%x_{t_0,t_0}\sinh\!\big(a^2(t-t_0)\big)
+%\Big].
+%}
+%\tag{B.3.4}
+%\end{equation}
 % ============================================================
 \section{Relation to Conventional Interest Rates}
 \label{appendix:C}
